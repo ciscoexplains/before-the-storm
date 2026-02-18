@@ -58,11 +58,14 @@ export default function JulianDashboard({ user }: { user: any }) {
         }
     }
 
+    const [error, setError] = useState('')
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!selectedCapsule || !newMessage.trim()) return
 
         setSending(true)
+        setError('')
         try {
             await saveSupportMessage(selectedCapsule.id, newMessage.trim())
             setSuccess(true)
@@ -71,8 +74,9 @@ export default function JulianDashboard({ user }: { user: any }) {
             const messages = await fetchSupportMessages(selectedCapsule.id)
             setSupportMessages(messages)
             setTimeout(() => setSuccess(false), 3000)
-        } catch {
-            // Handle error
+        } catch (err: any) {
+            console.error('Failed to send message:', err)
+            setError(err.message || 'Failed to send message. Please try again.')
         } finally {
             setSending(false)
         }
@@ -235,6 +239,15 @@ export default function JulianDashboard({ user }: { user: any }) {
                                             className={styles.successText}
                                         >
                                             Message saved. She'll find it when she needs it. ♡
+                                        </motion.p>
+                                    )}
+                                    {error && (
+                                        <motion.p
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '0.5rem', fontStyle: 'italic' }}
+                                        >
+                                            {error}
                                         </motion.p>
                                     )}
                                 </div>

@@ -78,7 +78,10 @@ export async function saveSupportMessage(capsuleId: string, message: string) {
         message,
     })
 
-    if (error) throw new Error(error.message)
+    if (error) {
+        console.error('Error saving support message:', error)
+        throw new Error(error.message)
+    }
     return { success: true }
 }
 
