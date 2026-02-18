@@ -1,0 +1,345 @@
+/* ============================================
+   JULIAN DASHBOARD — Support Messages View
+   Two-panel layout: storms list + detail/support
+   ============================================ */
+
+.container {
+    min-height: 100vh;
+    padding: var(--space-xl);
+    position: relative;
+}
+
+/* ─── Header ─── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.headerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.logo {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--text-primary);
+}
+
+.headerSub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.headerRight {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.navBtn {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.navBtn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-secondary);
+}
+
+/* ─── Layout ─── */
+.layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--space-xl);
+    min-height: calc(100vh - 160px);
+}
+
+/* ─── Storms List Panel ─── */
+.stormsList {
+    border-right: 1px solid var(--border);
+    padding-right: var(--space-xl);
+}
+
+.panelTitle {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+    letter-spacing: 0.01em;
+}
+
+.loadingText,
+.emptyText {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.capsuleList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.capsuleItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: var(--space-md) var(--space-md);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.capsuleItem:hover {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: var(--border);
+}
+
+.capsuleItemActive {
+    background: var(--bg-card);
+    border-color: var(--accent-gold) !important;
+    box-shadow: 0 0 12px rgba(212, 165, 116, 0.08);
+}
+
+.capsuleItemTitle {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.capsuleItemMeta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+/* ─── Detail Panel ─── */
+.detailPanel {
+    min-height: 400px;
+}
+
+.detailEmpty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+}
+
+.detailEmpty p {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.detailContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+/* ─── Storm Detail ─── */
+.stormDetail {
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.stormDate {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-md);
+}
+
+.stormTitle {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    line-height: 1.4;
+}
+
+.stormMessage {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    margin-bottom: var(--space-md);
+}
+
+.stormReminder {
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(212, 165, 116, 0.05);
+    border: 1px solid rgba(212, 165, 116, 0.12);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--accent-gold-light);
+    font-style: italic;
+}
+
+/* ─── Existing Support Messages ─── */
+.existingMessages {
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.messagesTitle {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-bottom: var(--space-md);
+}
+
+.supportMsg {
+    padding: var(--space-md);
+    background: rgba(212, 165, 116, 0.04);
+    border: 1px solid rgba(212, 165, 116, 0.1);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-md);
+}
+
+.supportMsgText {
+    font-size: 0.9rem;
+    color: var(--accent-gold-light);
+    font-style: italic;
+    line-height: 1.6;
+    flex: 1;
+}
+
+.supportMsgDate {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    margin-top: 0.15rem;
+}
+
+/* ─── Write Support ─── */
+.writeSupport {
+    /* No extra spacing needed */
+}
+
+.writeSupportTitle {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 300;
+    margin-bottom: 0.25rem;
+}
+
+.writeSupportSub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: var(--space-md);
+}
+
+.supportForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.supportForm textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.sendBtn {
+    align-self: flex-start;
+    padding: 0.75rem 1.75rem;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--bg-deep);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sendBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(212, 165, 116, 0.3);
+}
+
+.sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.successText {
+    font-size: 0.85rem;
+    color: var(--accent-gold);
+    font-style: italic;
+    margin-top: var(--space-sm);
+}
+
+/* ─── Mobile Responsive ─── */
+@media (max-width: 768px) {
+    .container {
+        padding: var(--space-md);
+    }
+
+    .header {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    .layout {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+
+    .stormsList {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-right: 0;
+        padding-bottom: var(--space-lg);
+    }
+
+    .capsuleList {
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
+    .stormTitle {
+        font-size: 1.25rem;
+    }
+
+    .sendBtn {
+        width: 100%;
+        text-align: center;
+        padding: 1rem;
+    }
+}

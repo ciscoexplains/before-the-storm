@@ -11,17 +11,17 @@ const fadeVariant = {
 }
 
 export default function LoginPage() {
-    const [step, setStep] = useState<'question' | 'password' | 'rejected'>('question')
+    const [step, setStep] = useState<'question' | 'password' | 'julianPassword' | 'rejected'>('question')
     const [error, setError] = useState('')
     const [submitting, setSubmitting] = useState(false)
 
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>, email: string) => {
         e.preventDefault()
         setSubmitting(true)
         setError('')
 
         const formData = new FormData(e.currentTarget)
-        formData.set('email', 'poet@beforethestorm.com')
+        formData.set('email', email)
 
         try {
             const { login } = await import('./actions')
@@ -71,6 +71,13 @@ export default function LoginPage() {
                                         No
                                     </button>
                                 </div>
+
+                                <button
+                                    onClick={() => setStep('julianPassword')}
+                                    className={styles.julianLink}
+                                >
+                                    Julian?
+                                </button>
                             </motion.div>
                         )}
 
@@ -80,7 +87,7 @@ export default function LoginPage() {
                                     Welcome home. ♡
                                 </p>
 
-                                <form onSubmit={handleLogin} className={styles.form}>
+                                <form onSubmit={(e) => handleLogin(e, 'poet@beforethestorm.com')} className={styles.form}>
                                     <div className={styles.inputGroup}>
                                         <label htmlFor="password">Password</label>
                                         <input
@@ -109,7 +116,50 @@ export default function LoginPage() {
                                 </form>
 
                                 <button
-                                    onClick={() => setStep('question')}
+                                    onClick={() => { setStep('question'); setError('') }}
+                                    className={styles.backLink}
+                                >
+                                    ← Go back
+                                </button>
+                            </motion.div>
+                        )}
+
+                        {step === 'julianPassword' && (
+                            <motion.div key="julianPassword" {...fadeVariant}>
+                                <p className={styles.cardIntro}>
+                                    Welcome, Julian. You're here for her. ♡
+                                </p>
+
+                                <form onSubmit={(e) => handleLogin(e, 'julian@beforethestorm.com')} className={styles.form}>
+                                    <div className={styles.inputGroup}>
+                                        <label htmlFor="julian-password">Password</label>
+                                        <input
+                                            id="julian-password"
+                                            name="password"
+                                            type="password"
+                                            required
+                                            placeholder="••••••••"
+                                            autoComplete="current-password"
+                                            autoFocus
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={submitting}
+                                        className="btn-primary"
+                                        style={{ width: '100%', marginTop: '0.5rem' }}
+                                    >
+                                        {submitting ? 'Entering...' : 'Enter as Julian'}
+                                    </button>
+
+                                    {error && (
+                                        <p className={styles.error}>{error}</p>
+                                    )}
+                                </form>
+
+                                <button
+                                    onClick={() => { setStep('question'); setError('') }}
                                     className={styles.backLink}
                                 >
                                     ← Go back

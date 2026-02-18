@@ -20,8 +20,11 @@ type Capsule = {
 }
 
 type SupportMessage = {
+    id: string
     message: string
     sender_name: string
+    created_at: string
+    capsule_id: string
 }
 
 const fadeVariant = {
@@ -35,7 +38,7 @@ export default function StormMode({ moodRating, onBackToGate }: StormModeProps) 
     const [capsules, setCapsules] = useState<Capsule[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
     const [loading, setLoading] = useState(true)
-    const [supportMessage, setSupportMessage] = useState<SupportMessage | null>(null)
+    const [supportMessages, setSupportMessages] = useState<SupportMessage[]>([])
     const [showSupport, setShowSupport] = useState(false)
     const [showSurvived, setShowSurvived] = useState(false)
     const [totalCapsules, setTotalCapsules] = useState(0)
@@ -53,22 +56,27 @@ export default function StormMode({ moodRating, onBackToGate }: StormModeProps) 
                 setCapsules(shuffled)
             }
 
-            if (moodRating <= 4) {
-                const { data: support } = await supabase
-                    .from('support_messages')
-                    .select('*')
-                    .limit(10)
-
-                if (support && support.length > 0) {
-                    const randomMsg = support[Math.floor(Math.random() * support.length)]
-                    setSupportMessage(randomMsg)
-                }
-            }
-
             setLoading(false)
         }
         fetchData()
     }, [])
+
+    // Fetch support messages for the current capsule
+    useEffect(() => {
+        async function fetchSupport() {
+            if (!capsules[currentIndex]) return
+            setShowSupport(false)
+
+            const { data } = await supabase
+                .from('support_messages')
+                .select('*')
+                .eq('capsule_id', capsules[currentIndex].id)
+                .order('created_at', { ascending: true })
+
+            setSupportMessages(data || [])
+        }
+        fetchSupport()
+    }, [currentIndex, capsules])
 
     const currentCapsule = capsules[currentIndex]
 
@@ -150,15 +158,20 @@ export default function StormMode({ moodRating, onBackToGate }: StormModeProps) 
                                 </div>
                             )}
 
-                            {showSupport && supportMessage && (
+                            {/* Support messages from Julian */}
+                            {showSupport && supportMessages.length > 0 && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 8 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 1 }}
-                                    className={styles.supportBlock}
+                                    className={styles.supportSection}
                                 >
-                                    <p className={styles.supportLabel}>Message from {supportMessage.sender_name}</p>
-                                    <p className={styles.supportText}>{supportMessage.message}</p>
+                                    <p className={styles.supportLabel}>Message from Julian</p>
+                                    {supportMessages.map((msg) => (
+                                        <div key={msg.id} className={styles.supportBlock}>
+                                            <p className={styles.supportText}>{msg.message}</p>
+                                        </div>
+                                    ))}
                                 </motion.div>
                             )}
 
@@ -177,12 +190,12 @@ export default function StormMode({ moodRating, onBackToGate }: StormModeProps) 
                                     Read another storm
                                 </button>
 
-                                {supportMessage && !showSupport && (
+                                {supportMessages.length > 0 && !showSupport && (
                                     <button
                                         onClick={() => setShowSupport(true)}
                                         className={styles.nextBtn}
                                     >
-                                        There's a message for you
+                                        ♡ There's a message for you
                                     </button>
                                 )}
                             </div>

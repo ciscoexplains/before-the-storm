@@ -170,6 +170,24 @@
     color: var(--accent-gold);
 }
 
+.julianLink {
+    display: block;
+    margin: var(--space-lg) auto 0;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: color 0.3s;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+.julianLink:hover {
+    color: var(--accent-gold);
+    opacity: 1;
+}
+
 @keyframes breathe {
 
     0%,

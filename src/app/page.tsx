@@ -1,6 +1,6 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import ClientHome from '@/components/ClientHome'
+import JulianDashboard from '@/components/JulianDashboard'
 import LandingPage from '@/components/LandingPage'
 
 export default async function Home() {
@@ -12,6 +12,13 @@ export default async function Home() {
 
   if (!user) {
     return <LandingPage />
+  }
+
+  // Route Julian to his support dashboard
+  const isJulian = user.email === 'julian@beforethestorm.com'
+
+  if (isJulian) {
+    return <JulianDashboard user={user} />
   }
 
   return <ClientHome user={user} />

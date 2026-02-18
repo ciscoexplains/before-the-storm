@@ -25,11 +25,20 @@ CREATE POLICY "Users can read their own capsules"
   ON emotional_capsules FOR SELECT
   USING (auth.uid() = user_id);
 
+-- Julian needs to read Ananda's capsules
+-- This policy allows any authenticated user to read all capsules 
+-- (only Julian + Ananda have accounts, so this is safe)
+CREATE POLICY "Julian can read all capsules"
+  ON emotional_capsules FOR SELECT
+  USING (auth.role() = 'authenticated');
+
 -- ============================================
--- Table: support_messages (Message from Julian)
+-- Table: support_messages (Messages from Julian)
+-- Linked to specific storms via capsule_id
 -- ============================================
 CREATE TABLE IF NOT EXISTS support_messages (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  capsule_id uuid REFERENCES emotional_capsules(id) ON DELETE CASCADE,
   sender_name text NOT NULL DEFAULT 'Julian',
   message text NOT NULL,
   unlock_mood_threshold integer CHECK (unlock_mood_threshold >= 1 AND unlock_mood_threshold <= 10),
@@ -43,4 +52,13 @@ CREATE POLICY "Authenticated users can read support messages"
   ON support_messages FOR SELECT
   USING (auth.role() = 'authenticated');
 
--- Only admins should insert support messages (manual via Supabase Dashboard)
+-- Julian can insert support messages
+CREATE POLICY "Julian can insert support messages"
+  ON support_messages FOR INSERT
+  WITH CHECK (auth.role() = 'authenticated');
+
+-- ============================================
+-- Migration: Add capsule_id to existing support_messages
+-- Run this if the table already exists without capsule_id
+-- ============================================
+-- ALTER TABLE support_messages ADD COLUMN IF NOT EXISTS capsule_id uuid REFERENCES emotional_capsules(id) ON DELETE CASCADE;
