@@ -22,7 +22,7 @@ type SupportMsg = {
     created_at: string
 }
 
-export default function JulianDashboard({ user }: { user: any }) {
+export default function JulianDashboard() {
     const [capsules, setCapsules] = useState<Capsule[]>([])
     const [selectedCapsule, setSelectedCapsule] = useState<Capsule | null>(null)
     const [supportMessages, setSupportMessages] = useState<SupportMsg[]>([])

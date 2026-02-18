@@ -18,7 +18,7 @@ export default async function Home() {
   const isJulian = user.email === 'julian@beforethestorm.com'
 
   if (isJulian) {
-    return <JulianDashboard user={user} />
+    return <JulianDashboard />
   }
 
   return <ClientHome user={user} />
