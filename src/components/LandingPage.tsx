@@ -9,7 +9,7 @@ export default function LandingPage() {
             <div className={styles.ambientOrb3} />
 
             <main className={styles.content}>
-                <div className={styles.icon}>✦</div>
+                <div className={styles.icon}>☁</div>
 
                 <h1 className={styles.title}>
                     Before the Storm
@@ -17,14 +17,14 @@ export default function LandingPage() {
                 <p className={styles.titleSub}>For Ananda</p>
 
                 <blockquote className={styles.quote}>
-                    "This space is only built when you are strong,
+                    "Name the storm while it is still yours to name —
                     <br />
-                    so it can protect you when you are not."
+                    before it becomes the silence you carry alone."
                 </blockquote>
 
                 <p className={styles.description}>
-                    An emotional time capsule. Write to your future self when the skies are clear —
-                    so when the storm comes, the voice that holds you is your own.
+                    A quiet space to sit with what you're going through.
+                    Write what the storm feels like — not to fix it, but to witness it.
                 </p>
 
                 <Link href="/login" className={styles.enterButton}>
@@ -36,7 +36,7 @@ export default function LandingPage() {
                 </div>
 
                 <p className={styles.philosophy}>
-                    Self-written secure base · Internal attachment anchor · Time-delayed self-validation
+                    Present-moment witness · Emotional grounding · Storm as lived truth
                 </p>
             </main>
         </div>

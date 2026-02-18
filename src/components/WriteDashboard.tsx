@@ -22,7 +22,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
     const [title, setTitle] = useState('')
     const [message, setMessage] = useState('')
     const [reminder, setReminder] = useState('')
-    const [moodRating, setMoodRating] = useState(7)
+    const [moodRating, setMoodRating] = useState(5)
     const [submitting, setSubmitting] = useState(false)
     const [success, setSuccess] = useState(false)
     const [capsules, setCapsules] = useState<Capsule[]>([])
@@ -58,7 +58,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
             setTitle('')
             setMessage('')
             setReminder('')
-            setMoodRating(7)
+            setMoodRating(5)
             await fetchCapsules()
             setTimeout(() => setSuccess(false), 4000)
         } catch {
@@ -68,12 +68,12 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
         }
     }
 
-    const getMoodLabel = (value: number) => {
-        if (value <= 3) return 'Still fragile'
-        if (value <= 5) return 'Trying'
-        if (value <= 7) return 'Strong enough'
-        if (value <= 9) return 'Strong'
-        return 'Unshakeable'
+    const getStormLabel = (value: number) => {
+        if (value <= 2) return 'Overwhelming'
+        if (value <= 4) return 'Heavy'
+        if (value <= 6) return 'Present but manageable'
+        if (value <= 8) return 'Easing'
+        return 'Passing'
     }
 
     return (
@@ -86,9 +86,9 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
             {/* Header */}
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <h1 className={styles.logo}>Before the Storm</h1>
+                    <h1 className={styles.logo}>☁ Before the Storm</h1>
                     <p className={styles.headerSub}>
-                        You're strong right now. Leave a light for later.
+                        Name what you're going through. Not to fix it — to witness it.
                     </p>
                 </div>
                 <div className={styles.headerRight}>
@@ -109,13 +109,13 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                     onClick={() => setView('write')}
                     className={`${styles.tab} ${view === 'write' ? styles.tabActive : ''}`}
                 >
-                    ✍ Write Capsule
+                    🌧 Name the Storm
                 </button>
                 <button
                     onClick={() => setView('capsules')}
                     className={`${styles.tab} ${view === 'capsules' ? styles.tabActive : ''}`}
                 >
-                    📦 Your Capsules ({capsules.length})
+                    ☁ Storms Named ({capsules.length})
                 </button>
                 <button
                     onClick={() => setShowTimeline(!showTimeline)}
@@ -135,18 +135,18 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                     <div className={styles.card}>
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <div className={styles.fieldGroup}>
-                                <label htmlFor="capsule-title">Title</label>
+                                <label htmlFor="capsule-title">What is this storm?</label>
                                 <input
                                     id="capsule-title"
                                     value={title}
                                     onChange={e => setTitle(e.target.value)}
                                     required
-                                    placeholder="For the night when you forget who you are..."
+                                    placeholder="Fear of losing control, burnout, quiet grief..."
                                 />
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label>How you feel now ({moodRating}/10 — {getMoodLabel(moodRating)})</label>
+                                <label>How heavy does it feel? ({moodRating}/10 — {getStormLabel(moodRating)})</label>
                                 <input
                                     type="range"
                                     min="1"
@@ -161,24 +161,24 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label htmlFor="capsule-message">A message to your future self</label>
+                                <label htmlFor="capsule-message">Describe what you're going through</label>
                                 <textarea
                                     id="capsule-message"
                                     value={message}
                                     onChange={e => setMessage(e.target.value)}
                                     required
                                     rows={8}
-                                    placeholder="What do you need to hear when the storm comes?"
+                                    placeholder="What does this storm feel like? What thoughts keep circling? What weight are you carrying right now?"
                                 />
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label htmlFor="capsule-reminder">Personal reminder</label>
+                                <label htmlFor="capsule-reminder">Something you want to remember</label>
                                 <input
                                     id="capsule-reminder"
                                     value={reminder}
                                     onChange={e => setReminder(e.target.value)}
-                                    placeholder="e.g. You already survived 2023."
+                                    placeholder="e.g. This feeling is real, but it is not permanent."
                                 />
                             </div>
 
@@ -187,7 +187,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                                 disabled={submitting}
                                 className={styles.submitBtn}
                             >
-                                {submitting ? 'Saving...' : '✦ Seal Capsule'}
+                                {submitting ? 'Saving...' : '☁ Name This Storm'}
                             </button>
                         </form>
 
@@ -197,7 +197,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                                 animate={{ opacity: 1, y: 0 }}
                                 className={styles.success}
                             >
-                                Message saved safely. ✦
+                                Storm witnessed and saved. ☁
                             </motion.p>
                         )}
                     </div>
@@ -213,7 +213,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                 >
                     {capsules.length === 0 ? (
                         <div className={styles.emptyState}>
-                            <p>No capsules yet. Start writing your first message.</p>
+                            <p>No storms named yet. Start by writing what you're going through.</p>
                         </div>
                     ) : (
                         capsules.map((capsule, index) => (
@@ -245,7 +245,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                                     </p>
                                 )}
                                 <div className={styles.capsuleMood}>
-                                    Mood when written: {capsule.stable_mood_rating}/10
+                                    Storm intensity: {capsule.stable_mood_rating}/10
                                 </div>
                             </motion.div>
                         ))

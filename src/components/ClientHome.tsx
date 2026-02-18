@@ -16,10 +16,10 @@ export default function ClientHome({ user }: { user: any }) {
     const handleGateComplete = (isStable: boolean, score: number) => {
         setMoodRating(score)
         if (isStable) {
-            // "Ya" path — stable enough to read past messages
+            // "Yes" path — ready to read past storms
             setMode('storm')
         } else {
-            // "Tidak" path — breathe first, then write
+            // "No" path — ground first, then write
             setMode('grounding')
         }
     }
@@ -48,8 +48,9 @@ export default function ClientHome({ user }: { user: any }) {
                 <WriteDashboard user={user} onBackToGate={handleBackToGate} />
             )}
             {mode === 'storm' && (
-                <StormMode user={user} moodRating={moodRating} onBackToGate={handleBackToGate} />
+                <StormMode moodRating={moodRating} onBackToGate={handleBackToGate} />
             )}
         </div>
     )
 }
+

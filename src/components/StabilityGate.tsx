@@ -22,7 +22,6 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
 
     const handleScaleSubmit = async () => {
         setStep('checking')
-        // Server-side validation — cannot be bypassed
         const result = await checkStabilityGate(rating)
 
         if (result.allowed) {
@@ -34,11 +33,11 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
     }
 
     const getMoodLabel = (value: number) => {
-        if (value <= 2) return 'Very unstable'
-        if (value <= 4) return 'Somewhat unstable'
-        if (value <= 6) return 'Fairly stable'
-        if (value <= 8) return 'Stable'
-        return 'Very stable'
+        if (value <= 2) return 'Deep in the storm'
+        if (value <= 4) return 'Clouds are heavy'
+        if (value <= 6) return 'Weathering it'
+        if (value <= 8) return 'Clearing skies'
+        return 'Calm after the storm'
     }
 
     const getMoodColor = (value: number) => {
@@ -55,10 +54,10 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
             <AnimatePresence mode="wait">
                 {step === 'intro' && (
                     <motion.div key="intro" {...fadeVariant} className={styles.step}>
-                        <div className={styles.icon}>✦</div>
+                        <div className={styles.icon}>☁</div>
                         <h2 className={styles.heading}>Welcome back.</h2>
                         <p className={styles.subtext}>
-                            Before you enter, let's check in with yourself.
+                            Before you enter, let's check in with where you are right now.
                         </p>
                         <button onClick={() => setStep('question1')} className={styles.continueBtn}>
                             Begin
@@ -70,14 +69,14 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                     <motion.div key="q1" {...fadeVariant} className={styles.step}>
                         <p className={styles.stepIndicator}>1 / 3</p>
                         <h2 className={styles.heading}>
-                            Do you feel stable enough to read messages about yourself?
+                            Do you feel ready to sit with the storms you've named?
                         </h2>
                         <div className={styles.choiceRow}>
                             <button onClick={() => setStep('question2')} className={styles.choiceBtn}>
                                 Yes, I think so
                             </button>
                             <button onClick={() => onComplete(false, 8)} className={styles.choiceBtnSoft}>
-                                No, I'm struggling right now
+                                No, I need to write first
                             </button>
                         </div>
                     </motion.div>
@@ -87,7 +86,7 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                     <motion.div key="q2" {...fadeVariant} className={styles.step}>
                         <p className={styles.stepIndicator}>2 / 3</p>
                         <h2 className={styles.heading}>
-                            Can you receive words without using them to hurt yourself?
+                            Can you hold these words gently, without turning them against yourself?
                         </h2>
                         <div className={styles.choiceRow}>
                             <button onClick={() => setStep('scale')} className={styles.choiceBtn}>
@@ -104,10 +103,10 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                     <motion.div key="scale" {...fadeVariant} className={styles.step}>
                         <p className={styles.stepIndicator}>3 / 3</p>
                         <h2 className={styles.heading}>
-                            How are you feeling right now?
+                            Where are you in the storm right now?
                         </h2>
                         <p className={styles.subtext}>
-                            1 = very unstable, 10 = very stable
+                            1 = eye of the storm, 10 = skies are clearing
                         </p>
 
                         <div className={styles.scaleContainer}>
@@ -151,7 +150,7 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                 {step === 'checking' && (
                     <motion.div key="checking" {...fadeVariant} className={styles.step}>
                         <div className={styles.breatheCircle} />
-                        <p className={styles.subtext}>Checking...</p>
+                        <p className={styles.subtext}>Checking in...</p>
                     </motion.div>
                 )}
             </AnimatePresence>

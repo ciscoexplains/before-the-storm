@@ -1,9 +1,14 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/utils/supabase/client'
 import styles from './StormMode.module.css'
+
+type StormModeProps = {
+    moodRating: number
+    onBackToGate: () => void
+}
 
 type Capsule = {
     id: string
@@ -11,72 +16,78 @@ type Capsule = {
     message: string
     reminder: string
     stable_mood_rating: number
+    created_at: string
 }
 
 type SupportMessage = {
-    id: string
-    sender_name: string
     message: string
+    sender_name: string
 }
 
-export default function StormMode({ user, moodRating, onBackToGate }: {
-    user: any
-    moodRating: number
-    onBackToGate: () => void
-}) {
+const fadeVariant = {
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' as const } },
+    exit: { opacity: 0, y: -8, transition: { duration: 0.4 } },
+}
+
+export default function StormMode({ moodRating, onBackToGate }: StormModeProps) {
     const supabase = createClient()
-    const [capsule, setCapsule] = useState<Capsule | null>(null)
-    const [supportMessage, setSupportMessage] = useState<SupportMessage | null>(null)
+    const [capsules, setCapsules] = useState<Capsule[]>([])
+    const [currentIndex, setCurrentIndex] = useState(0)
     const [loading, setLoading] = useState(true)
-    const [totalCapsules, setTotalCapsules] = useState(0)
-    const [showSurvived, setShowSurvived] = useState(false)
+    const [supportMessage, setSupportMessage] = useState<SupportMessage | null>(null)
     const [showSupport, setShowSupport] = useState(false)
-
-    const fetchRandomCapsule = useCallback(async () => {
-        setLoading(true)
-        setShowSurvived(false)
-        setShowSupport(false)
-        setSupportMessage(null)
-
-        const { data: capsules } = await supabase
-            .from('emotional_capsules')
-            .select('*')
-
-        if (capsules && capsules.length > 0) {
-            setTotalCapsules(capsules.length)
-            const random = capsules[Math.floor(Math.random() * capsules.length)]
-            setCapsule(random)
-        }
-
-        // Support messages (randomized, only if mood < 4)
-        if (moodRating < 4) {
-            const { data: support } = await supabase
-                .from('support_messages')
-                .select('*')
-
-            if (support && support.length > 0 && Math.random() > 0.4) {
-                const randomSupport = support[Math.floor(Math.random() * support.length)]
-                setSupportMessage(randomSupport)
-            }
-        }
-
-        setLoading(false)
-    }, [moodRating, supabase])
+    const [showSurvived, setShowSurvived] = useState(false)
+    const [totalCapsules, setTotalCapsules] = useState(0)
 
     useEffect(() => {
-        fetchRandomCapsule()
-    }, [fetchRandomCapsule])
+        async function fetchData() {
+            const { data: allCapsules } = await supabase
+                .from('emotional_capsules')
+                .select('*')
+                .order('created_at', { ascending: false })
+
+            if (allCapsules) {
+                setTotalCapsules(allCapsules.length)
+                const shuffled = [...allCapsules].sort(() => Math.random() - 0.5)
+                setCapsules(shuffled)
+            }
+
+            if (moodRating <= 4) {
+                const { data: support } = await supabase
+                    .from('support_messages')
+                    .select('*')
+                    .limit(10)
+
+                if (support && support.length > 0) {
+                    const randomMsg = support[Math.floor(Math.random() * support.length)]
+                    setSupportMessage(randomMsg)
+                }
+            }
+
+            setLoading(false)
+        }
+        fetchData()
+    }, [])
+
+    const currentCapsule = capsules[currentIndex]
+
+    const handleNext = () => {
+        setShowSupport(false)
+        setShowSurvived(false)
+        setCurrentIndex((prev) => (prev + 1) % capsules.length)
+    }
 
     if (loading) {
         return (
             <div className={styles.container}>
                 <motion.div
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    animate={{ opacity: 1, transition: { duration: 1 } }}
                     className={styles.loadingState}
                 >
                     <div className={styles.loadingOrb} />
-                    <p>Searching for light...</p>
+                    <p>Gathering your storms...</p>
                 </motion.div>
             </div>
         )
@@ -84,128 +95,116 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
 
     return (
         <div className={styles.container}>
-            <div className={styles.ambientBg} />
+            <div className={styles.ambientOrb} />
 
-            <AnimatePresence mode="wait">
-                {!capsule ? (
+            {/* Poetic heading */}
+            <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: 1 } }}
+                className={styles.headingArea}
+            >
+                <h1 className={styles.mainHeading}>⛈ Storms You Have Weathered</h1>
+                <p className={styles.headingSub}>
+                    These are storms you named — proof you faced them.
+                </p>
+            </motion.div>
+
+            <div className={styles.contentArea}>
+                {capsules.length === 0 ? (
                     <motion.div
-                        key="empty"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1, transition: { duration: 1.5 } }}
                         className={styles.emptyState}
                     >
-                        <h2>It's dark right now.</h2>
-                        <p>But you haven't left any messages yet.<br />Breathe. You're safe here.</p>
+                        <h2>No storms named yet.</h2>
+                        <p>You haven't written anything down yet.<br />That's okay. The space is here when you need it.</p>
                         <button onClick={onBackToGate} className={styles.ghostBtn}>
                             Go back
                         </button>
                     </motion.div>
                 ) : (
-                    <motion.div
-                        key={capsule.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1.5, ease: 'easeOut' }}
-                        className={styles.messageScreen}
-                    >
-                        {/* Title */}
-                        <motion.h2
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.5, duration: 1 }}
-                            className={styles.capsuleTitle}
-                        >
-                            {capsule.title}
-                        </motion.h2>
-
-                        {/* Message */}
+                    <AnimatePresence mode="wait">
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 1.5, duration: 1.2 }}
-                            className={styles.capsuleMessage}
+                            key={currentCapsule.id}
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1, transition: { duration: 0.8 } }}
+                            exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.3 } }}
+                            className={styles.capsuleCard}
                         >
-                            {capsule.message.split('\n').map((line, i) => (
-                                <p key={i}>{line}</p>
-                            ))}
-                        </motion.div>
+                            <p className={styles.capsuleDate}>
+                                {new Date(currentCapsule.created_at).toLocaleDateString('en-US', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric',
+                                })}
+                            </p>
 
-                        {/* Reminder */}
-                        {capsule.reminder && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 3, duration: 1 }}
-                                className={styles.reminderBlock}
-                            >
-                                <span className={styles.reminderIcon}>✦</span>
-                                <span>{capsule.reminder}</span>
-                            </motion.div>
-                        )}
+                            <h2 className={styles.capsuleTitle}>{currentCapsule.title}</h2>
+                            <p className={styles.capsuleMessage}>{currentCapsule.message}</p>
 
-                        {/* Support Message from Julian */}
-                        {showSupport && supportMessage && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 1 }}
-                                className={styles.supportBlock}
-                            >
-                                <p className={styles.supportLabel}>Message from {supportMessage.sender_name}</p>
-                                <p className={styles.supportText}>{supportMessage.message}</p>
-                            </motion.div>
-                        )}
+                            {currentCapsule.reminder && (
+                                <div className={styles.reminderBlock}>
+                                    <p className={styles.reminderText}>
+                                        💡 {currentCapsule.reminder}
+                                    </p>
+                                </div>
+                            )}
 
-                        {/* I Survived This Once button */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 4, duration: 1 }}
-                            className={styles.actions}
-                        >
-                            <button
-                                onClick={() => setShowSurvived(true)}
-                                className={styles.survivedBtn}
-                            >
-                                I survived this once
-                            </button>
+                            {showSupport && supportMessage && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 1 }}
+                                    className={styles.supportBlock}
+                                >
+                                    <p className={styles.supportLabel}>Message from {supportMessage.sender_name}</p>
+                                    <p className={styles.supportText}>{supportMessage.message}</p>
+                                </motion.div>
+                            )}
 
-                            <button
-                                onClick={fetchRandomCapsule}
-                                className={styles.nextBtn}
-                            >
-                                Read another message
-                            </button>
-
-                            {supportMessage && !showSupport && (
+                            <div className={styles.actions}>
                                 <button
-                                    onClick={() => setShowSupport(true)}
+                                    onClick={() => setShowSurvived(true)}
+                                    className={styles.survivedBtn}
+                                >
+                                    I weathered this
+                                </button>
+
+                                <button
+                                    onClick={handleNext}
                                     className={styles.nextBtn}
                                 >
-                                    There's a message for you
+                                    Read another storm
                                 </button>
+
+                                {supportMessage && !showSupport && (
+                                    <button
+                                        onClick={() => setShowSupport(true)}
+                                        className={styles.nextBtn}
+                                    >
+                                        There's a message for you
+                                    </button>
+                                )}
+                            </div>
+
+                            {showSurvived && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className={styles.survivedBlock}
+                                >
+                                    <p className={styles.survivedStat}>
+                                        You've named <strong>{totalCapsules}</strong> storms.
+                                    </p>
+                                    <p className={styles.survivedNote}>
+                                        And you're still here. That is the proof.
+                                    </p>
+                                </motion.div>
                             )}
                         </motion.div>
-
-                        {/* Survived stats */}
-                        {showSurvived && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8 }}
-                                className={styles.survivedBlock}
-                            >
-                                <p className={styles.survivedStat}>
-                                    You've written <strong>{totalCapsules}</strong> messages to yourself.
-                                </p>
-                                <p className={styles.survivedNote}>
-                                    You were strong enough to write them.
-                                </p>
-                            </motion.div>
-                        )}
-                    </motion.div>
+                    </AnimatePresence>
                 )}
-            </AnimatePresence>
+            </div>
 
             {/* Subtle exit */}
             <div className={styles.bottomNav}>

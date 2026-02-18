@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${fraunces.variable}`}>
         <div className="global-brand">
-          <span className="global-brand-icon">✦</span>
+          <span className="global-brand-icon">☁</span>
           Before the Storm <em>for Ananda</em>
         </div>
         {children}

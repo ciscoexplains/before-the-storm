@@ -21,7 +21,6 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
     const [isInhaling, setIsInhaling] = useState(true)
     const [failedMultiple, setFailedMultiple] = useState(false)
 
-    // Check if user has failed multiple times (via sessionStorage)
     useEffect(() => {
         const fails = parseInt(sessionStorage.getItem('gate_fails') || '0')
         if (fails > 1) {
@@ -30,7 +29,6 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
         sessionStorage.setItem('gate_fails', String(fails + 1))
     }, [])
 
-    // Breathing timer
     useEffect(() => {
         if (phase !== 'breathe') return
 
@@ -61,26 +59,26 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
             <AnimatePresence mode="wait">
                 {phase === 'message' && (
                     <motion.div key="message" {...fadeVariant} className={styles.step}>
-                        <div className={styles.icon}>◎</div>
+                        <div className={styles.icon}>🌧</div>
 
                         {failedMultiple ? (
                             <>
                                 <p className={styles.gentleText}>
-                                    This space isn't closing itself off from you.
+                                    The rain is still falling, and that's okay.
                                 </p>
                                 <p className={styles.gentleTextSmall}>
-                                    It's waiting for you to come back —
-                                    a little gentler with yourself.
+                                    This space stays open for you —
+                                    come back when you feel a little steadier.
                                 </p>
                             </>
                         ) : (
                             <>
                                 <p className={styles.gentleText}>
-                                    It's okay.<br />
-                                    You don't have to force anything right now.
+                                    The storm is loud right now.<br />
+                                    You don't have to do anything about it yet.
                                 </p>
                                 <p className={styles.gentleTextSmall}>
-                                    Let's breathe together for a moment.
+                                    Let's just breathe together for a moment.
                                 </p>
                             </>
                         )}
@@ -121,7 +119,7 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
                         <p className={styles.gentleTextSmall}>
                             Feel its texture. Its temperature. Its weight.
                             <br />
-                            You're still here. You're present.
+                            You're still here. The storm hasn't taken you.
                         </p>
                         <button onClick={() => setPhase('closing')} className={styles.softBtn}>
                             I felt it
@@ -132,17 +130,17 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
                 {phase === 'closing' && (
                     <motion.div key="closing" {...fadeVariant} className={styles.step}>
                         <p className={styles.closingText}>
-                            You're allowed to write messages from your stronger self.
+                            Now — name what you're going through.
                             <br />
-                            Write as an ally, not an enemy.
+                            Not to solve it, just to see it clearly.
                         </p>
 
                         <button onClick={onComplete} className={styles.enterBtn}>
-                            Start writing
+                            Begin writing
                         </button>
 
                         <p className={styles.closingNote}>
-                            Come back when you can read this as your ally, not your enemy.
+                            Your storm deserves to be witnessed.
                         </p>
                     </motion.div>
                 )}

@@ -39,7 +39,7 @@ export default function LoginPage() {
 
             <div className={styles.content}>
                 <div className={styles.brand}>
-                    <div className={styles.brandIcon}>✦</div>
+                    <div className={styles.brandIcon}>☁</div>
                     <h1 className={styles.title}>Before the Storm</h1>
                     <p className={styles.subtitle}>For Ananda</p>
                 </div>
@@ -49,8 +49,8 @@ export default function LoginPage() {
                         {step === 'question' && (
                             <motion.div key="question" {...fadeVariant}>
                                 <p className={styles.cardIntro}>
-                                    This space is only built when you are strong,<br />
-                                    so it can protect you when you are not.
+                                    Name the storm while it is still yours to name —<br />
+                                    before it becomes the silence you carry alone.
                                 </p>
 
                                 <h2 className={styles.gateQuestion}>Are you my wife?</h2>

@@ -60,7 +60,7 @@ export default function EmotionalTimeline({ user }: { user: any }) {
                     labels,
                     datasets: [
                         {
-                            label: 'Stability',
+                            label: 'Storm Intensity',
                             data: ratings,
                             borderColor: 'rgba(212, 165, 116, 0.8)',
                             backgroundColor: 'rgba(212, 165, 116, 0.08)',
@@ -124,7 +124,7 @@ export default function EmotionalTimeline({ user }: { user: any }) {
         return (
             <div className={styles.container}>
                 <p className={styles.emptyText}>
-                    Not enough data to display yet. Start writing capsules.
+                    No storms recorded yet. Start naming what you're going through.
                 </p>
             </div>
         )
@@ -133,19 +133,19 @@ export default function EmotionalTimeline({ user }: { user: any }) {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h3 className={styles.title}>Your Emotional Resilience</h3>
-                <p className={styles.subtitle}>Reflection, not evaluation.</p>
+                <h3 className={styles.title}>⛈ Weather Patterns</h3>
+                <p className={styles.subtitle}>A view of the storms you've moved through, not a score.</p>
             </div>
 
             {stats && (
                 <div className={styles.statsRow}>
                     <div className={styles.statCard}>
                         <span className={styles.statValue}>{stats.totalMessages}</span>
-                        <span className={styles.statLabel}>Messages written</span>
+                        <span className={styles.statLabel}>Storms named</span>
                     </div>
                     <div className={styles.statCard}>
                         <span className={styles.statValue}>{stats.averageMood}</span>
-                        <span className={styles.statLabel}>Average mood</span>
+                        <span className={styles.statLabel}>Average intensity</span>
                     </div>
                 </div>
             )}
