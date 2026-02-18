@@ -34,11 +34,11 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
     }
 
     const getMoodLabel = (value: number) => {
-        if (value <= 2) return 'Sangat tidak stabil'
-        if (value <= 4) return 'Kurang stabil'
-        if (value <= 6) return 'Cukup stabil'
-        if (value <= 8) return 'Stabil'
-        return 'Sangat stabil'
+        if (value <= 2) return 'Very unstable'
+        if (value <= 4) return 'Somewhat unstable'
+        if (value <= 6) return 'Fairly stable'
+        if (value <= 8) return 'Stable'
+        return 'Very stable'
     }
 
     const getMoodColor = (value: number) => {
@@ -58,10 +58,10 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                         <div className={styles.icon}>✦</div>
                         <h2 className={styles.heading}>Welcome back.</h2>
                         <p className={styles.subtext}>
-                            Sebelum masuk, mari periksa kondisimu dulu.
+                            Before you enter, let's check in with yourself.
                         </p>
                         <button onClick={() => setStep('question1')} className={styles.continueBtn}>
-                            Mulai
+                            Begin
                         </button>
                     </motion.div>
                 )}
@@ -70,14 +70,14 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                     <motion.div key="q1" {...fadeVariant} className={styles.step}>
                         <p className={styles.stepIndicator}>1 / 3</p>
                         <h2 className={styles.heading}>
-                            Apakah kamu merasa cukup stabil untuk membaca pesan tentang dirimu sendiri?
+                            Do you feel stable enough to read messages about yourself?
                         </h2>
                         <div className={styles.choiceRow}>
                             <button onClick={() => setStep('question2')} className={styles.choiceBtn}>
-                                Ya, sepertinya iya
+                                Yes, I think so
                             </button>
                             <button onClick={() => onComplete(false, 8)} className={styles.choiceBtnSoft}>
-                                Tidak, aku sedang kesulitan
+                                No, I'm struggling right now
                             </button>
                         </div>
                     </motion.div>
@@ -87,14 +87,14 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                     <motion.div key="q2" {...fadeVariant} className={styles.step}>
                         <p className={styles.stepIndicator}>2 / 3</p>
                         <h2 className={styles.heading}>
-                            Apakah kamu bisa menerima kata-kata tanpa menggunakannya untuk menyakiti diri?
+                            Can you receive words without using them to hurt yourself?
                         </h2>
                         <div className={styles.choiceRow}>
                             <button onClick={() => setStep('scale')} className={styles.choiceBtn}>
-                                Ya, aku bisa
+                                Yes, I can
                             </button>
                             <button onClick={() => onComplete(false, 6)} className={styles.choiceBtnSoft}>
-                                Aku tidak yakin
+                                I'm not sure
                             </button>
                         </div>
                     </motion.div>
@@ -104,10 +104,10 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                     <motion.div key="scale" {...fadeVariant} className={styles.step}>
                         <p className={styles.stepIndicator}>3 / 3</p>
                         <h2 className={styles.heading}>
-                            Bagaimana perasaanmu sekarang?
+                            How are you feeling right now?
                         </h2>
                         <p className={styles.subtext}>
-                            1 = sangat tidak stabil, 10 = sangat stabil
+                            1 = very unstable, 10 = very stable
                         </p>
 
                         <div className={styles.scaleContainer}>
@@ -143,7 +143,7 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                         </div>
 
                         <button onClick={handleScaleSubmit} className={styles.continueBtn}>
-                            Lanjutkan
+                            Continue
                         </button>
                     </motion.div>
                 )}
@@ -151,7 +151,7 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                 {step === 'checking' && (
                     <motion.div key="checking" {...fadeVariant} className={styles.step}>
                         <div className={styles.breatheCircle} />
-                        <p className={styles.subtext}>Memeriksa...</p>
+                        <p className={styles.subtext}>Checking...</p>
                     </motion.div>
                 )}
             </AnimatePresence>

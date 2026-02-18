@@ -66,27 +66,27 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
                         {failedMultiple ? (
                             <>
                                 <p className={styles.gentleText}>
-                                    Ruang ini tidak menutup diri darimu.
+                                    This space isn't closing itself off from you.
                                 </p>
                                 <p className={styles.gentleTextSmall}>
-                                    Dia sedang menunggumu kembali —
-                                    dengan lebih lembut kepada dirimu sendiri.
+                                    It's waiting for you to come back —
+                                    a little gentler with yourself.
                                 </p>
                             </>
                         ) : (
                             <>
                                 <p className={styles.gentleText}>
-                                    Tidak apa-apa.<br />
-                                    Kamu tidak perlu memaksakan apa pun sekarang.
+                                    It's okay.<br />
+                                    You don't have to force anything right now.
                                 </p>
                                 <p className={styles.gentleTextSmall}>
-                                    Mari bernapas sebentar bersama.
+                                    Let's breathe together for a moment.
                                 </p>
                             </>
                         )}
 
                         <button onClick={() => setPhase('breathe')} className={styles.softBtn}>
-                            Mulai bernapas
+                            Start breathing
                         </button>
                     </motion.div>
                 )}
@@ -103,11 +103,11 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
                                 transition={{ duration: 4, ease: 'easeInOut' }}
                             />
                             <p className={styles.breatheLabel}>
-                                {isInhaling ? 'Tarik napas...' : 'Keluarkan...'}
+                                {isInhaling ? 'Breathe in...' : 'Breathe out...'}
                             </p>
                         </div>
                         <p className={styles.breatheCount}>
-                            Napas {Math.min(breathCount + 1, 3)} dari 3
+                            Breath {Math.min(breathCount + 1, 3)} of 3
                         </p>
                     </motion.div>
                 )}
@@ -116,15 +116,15 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
                     <motion.div key="touch" {...fadeVariant} className={styles.step}>
                         <div className={styles.icon}>⊹</div>
                         <p className={styles.gentleText}>
-                            Sentuh sesuatu di dekatmu.
+                            Touch something near you.
                         </p>
                         <p className={styles.gentleTextSmall}>
-                            Rasakan teksturnya. Suhunya. Beratnya.
+                            Feel its texture. Its temperature. Its weight.
                             <br />
-                            Kamu masih di sini. Kamu hadir.
+                            You're still here. You're present.
                         </p>
                         <button onClick={() => setPhase('closing')} className={styles.softBtn}>
-                            Aku sudah merasakannya
+                            I felt it
                         </button>
                     </motion.div>
                 )}
@@ -132,13 +132,13 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
                 {phase === 'closing' && (
                     <motion.div key="closing" {...fadeVariant} className={styles.step}>
                         <p className={styles.closingText}>
-                            Kamu boleh membaca pesan-pesan dari dirimu yang kuat.
+                            You're allowed to write messages from your stronger self.
                             <br />
-                            Bacalah sebagai sekutu, bukan musuh.
+                            Write as an ally, not an enemy.
                         </p>
 
                         <button onClick={onComplete} className={styles.enterBtn}>
-                            Baca pesan-pesanku
+                            Start writing
                         </button>
 
                         <p className={styles.closingNote}>

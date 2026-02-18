@@ -69,11 +69,11 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
     }
 
     const getMoodLabel = (value: number) => {
-        if (value <= 3) return 'Masih rapuh'
-        if (value <= 5) return 'Sedang berusaha'
-        if (value <= 7) return 'Cukup kuat'
-        if (value <= 9) return 'Kuat'
-        return 'Tak tergoyahkan'
+        if (value <= 3) return 'Still fragile'
+        if (value <= 5) return 'Trying'
+        if (value <= 7) return 'Strong enough'
+        if (value <= 9) return 'Strong'
+        return 'Unshakeable'
     }
 
     return (
@@ -88,7 +88,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                 <div className={styles.headerLeft}>
                     <h1 className={styles.logo}>Before the Storm</h1>
                     <p className={styles.headerSub}>
-                        Kamu sedang kuat sekarang. Tinggalkan cahaya untuk nanti.
+                        You're strong right now. Leave a light for later.
                     </p>
                 </div>
                 <div className={styles.headerRight}>
@@ -97,7 +97,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                     </button>
                     <form action={logout}>
                         <button type="submit" className={styles.navBtn}>
-                            Keluar
+                            Log out
                         </button>
                     </form>
                 </div>
@@ -109,13 +109,13 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                     onClick={() => setView('write')}
                     className={`${styles.tab} ${view === 'write' ? styles.tabActive : ''}`}
                 >
-                    ✍ Tulis Kapsul
+                    ✍ Write Capsule
                 </button>
                 <button
                     onClick={() => setView('capsules')}
                     className={`${styles.tab} ${view === 'capsules' ? styles.tabActive : ''}`}
                 >
-                    📦 Kapsul-kapsulmu ({capsules.length})
+                    📦 Your Capsules ({capsules.length})
                 </button>
                 <button
                     onClick={() => setShowTimeline(!showTimeline)}
@@ -135,18 +135,18 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                     <div className={styles.card}>
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <div className={styles.fieldGroup}>
-                                <label htmlFor="capsule-title">Judul</label>
+                                <label htmlFor="capsule-title">Title</label>
                                 <input
                                     id="capsule-title"
                                     value={title}
                                     onChange={e => setTitle(e.target.value)}
                                     required
-                                    placeholder="Untuk malam saat kamu lupa siapa dirimu..."
+                                    placeholder="For the night when you forget who you are..."
                                 />
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label>Perasaanmu sekarang ({moodRating}/10 — {getMoodLabel(moodRating)})</label>
+                                <label>How you feel now ({moodRating}/10 — {getMoodLabel(moodRating)})</label>
                                 <input
                                     type="range"
                                     min="1"
@@ -161,24 +161,24 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label htmlFor="capsule-message">Pesan untuk dirimu di masa depan</label>
+                                <label htmlFor="capsule-message">A message to your future self</label>
                                 <textarea
                                     id="capsule-message"
                                     value={message}
                                     onChange={e => setMessage(e.target.value)}
                                     required
                                     rows={8}
-                                    placeholder="Apa yang perlu kamu dengar saat badai datang?"
+                                    placeholder="What do you need to hear when the storm comes?"
                                 />
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label htmlFor="capsule-reminder">Pengingat personal</label>
+                                <label htmlFor="capsule-reminder">Personal reminder</label>
                                 <input
                                     id="capsule-reminder"
                                     value={reminder}
                                     onChange={e => setReminder(e.target.value)}
-                                    placeholder="Contoh: Kamu sudah pernah melewati 2023."
+                                    placeholder="e.g. You already survived 2023."
                                 />
                             </div>
 
@@ -187,7 +187,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                                 disabled={submitting}
                                 className={styles.submitBtn}
                             >
-                                {submitting ? 'Menyimpan...' : '✦ Segel Kapsul'}
+                                {submitting ? 'Saving...' : '✦ Seal Capsule'}
                             </button>
                         </form>
 
@@ -197,7 +197,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                                 animate={{ opacity: 1, y: 0 }}
                                 className={styles.success}
                             >
-                                Pesan tersimpan dengan aman. ✦
+                                Message saved safely. ✦
                             </motion.p>
                         )}
                     </div>
@@ -213,7 +213,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                 >
                     {capsules.length === 0 ? (
                         <div className={styles.emptyState}>
-                            <p>Belum ada kapsul. Mulailah menulis pesan pertamamu.</p>
+                            <p>No capsules yet. Start writing your first message.</p>
                         </div>
                     ) : (
                         capsules.map((capsule, index) => (
@@ -227,7 +227,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                                 <div className={styles.capsuleHeader}>
                                     <h3 className={styles.capsuleTitle}>{capsule.title}</h3>
                                     <span className={styles.capsuleDate}>
-                                        {new Date(capsule.created_at).toLocaleDateString('id-ID', {
+                                        {new Date(capsule.created_at).toLocaleDateString('en-US', {
                                             day: 'numeric',
                                             month: 'long',
                                             year: 'numeric'
@@ -245,7 +245,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                                     </p>
                                 )}
                                 <div className={styles.capsuleMood}>
-                                    Mood saat menulis: {capsule.stable_mood_rating}/10
+                                    Mood when written: {capsule.stable_mood_rating}/10
                                 </div>
                             </motion.div>
                         ))

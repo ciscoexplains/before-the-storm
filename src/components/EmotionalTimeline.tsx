@@ -42,7 +42,7 @@ export default function EmotionalTimeline({ user }: { user: any }) {
 
             if (data && data.length > 0) {
                 const labels = data.map(d =>
-                    new Date(d.created_at).toLocaleDateString('id-ID', {
+                    new Date(d.created_at).toLocaleDateString('en-US', {
                         day: 'numeric',
                         month: 'short',
                     })
@@ -60,7 +60,7 @@ export default function EmotionalTimeline({ user }: { user: any }) {
                     labels,
                     datasets: [
                         {
-                            label: 'Stabilitas',
+                            label: 'Stability',
                             data: ratings,
                             borderColor: 'rgba(212, 165, 116, 0.8)',
                             backgroundColor: 'rgba(212, 165, 116, 0.08)',
@@ -124,7 +124,7 @@ export default function EmotionalTimeline({ user }: { user: any }) {
         return (
             <div className={styles.container}>
                 <p className={styles.emptyText}>
-                    Belum ada data untuk ditampilkan. Mulailah menulis kapsul.
+                    Not enough data to display yet. Start writing capsules.
                 </p>
             </div>
         )
@@ -133,19 +133,19 @@ export default function EmotionalTimeline({ user }: { user: any }) {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <h3 className={styles.title}>Ketahanan Emosionalmu</h3>
-                <p className={styles.subtitle}>Refleksi, bukan evaluasi.</p>
+                <h3 className={styles.title}>Your Emotional Resilience</h3>
+                <p className={styles.subtitle}>Reflection, not evaluation.</p>
             </div>
 
             {stats && (
                 <div className={styles.statsRow}>
                     <div className={styles.statCard}>
                         <span className={styles.statValue}>{stats.totalMessages}</span>
-                        <span className={styles.statLabel}>Pesan ditulis</span>
+                        <span className={styles.statLabel}>Messages written</span>
                     </div>
                     <div className={styles.statCard}>
                         <span className={styles.statValue}>{stats.averageMood}</span>
-                        <span className={styles.statLabel}>Rata-rata mood</span>
+                        <span className={styles.statLabel}>Average mood</span>
                     </div>
                 </div>
             )}

@@ -76,7 +76,7 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
                     className={styles.loadingState}
                 >
                     <div className={styles.loadingOrb} />
-                    <p>Mencari cahaya...</p>
+                    <p>Searching for light...</p>
                 </motion.div>
             </div>
         )
@@ -94,10 +94,10 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
                         animate={{ opacity: 1, transition: { duration: 1.5 } }}
                         className={styles.emptyState}
                     >
-                        <h2>Sekarang sedang gelap.</h2>
-                        <p>Tapi kamu belum meninggalkan pesan apa pun.<br />Bernapaslah. Kamu aman di sini.</p>
+                        <h2>It's dark right now.</h2>
+                        <p>But you haven't left any messages yet.<br />Breathe. You're safe here.</p>
                         <button onClick={onBackToGate} className={styles.ghostBtn}>
-                            Kembali
+                            Go back
                         </button>
                     </motion.div>
                 ) : (
@@ -151,7 +151,7 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
                                 transition={{ duration: 1 }}
                                 className={styles.supportBlock}
                             >
-                                <p className={styles.supportLabel}>Pesan dari {supportMessage.sender_name}</p>
+                                <p className={styles.supportLabel}>Message from {supportMessage.sender_name}</p>
                                 <p className={styles.supportText}>{supportMessage.message}</p>
                             </motion.div>
                         )}
@@ -167,14 +167,14 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
                                 onClick={() => setShowSurvived(true)}
                                 className={styles.survivedBtn}
                             >
-                                Aku pernah melewati ini
+                                I survived this once
                             </button>
 
                             <button
                                 onClick={fetchRandomCapsule}
                                 className={styles.nextBtn}
                             >
-                                Baca pesan lain
+                                Read another message
                             </button>
 
                             {supportMessage && !showSupport && (
@@ -182,7 +182,7 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
                                     onClick={() => setShowSupport(true)}
                                     className={styles.nextBtn}
                                 >
-                                    Ada pesan untukmu
+                                    There's a message for you
                                 </button>
                             )}
                         </motion.div>
@@ -196,10 +196,10 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
                                 className={styles.survivedBlock}
                             >
                                 <p className={styles.survivedStat}>
-                                    Kamu telah menulis <strong>{totalCapsules}</strong> pesan untuk dirimu sendiri.
+                                    You've written <strong>{totalCapsules}</strong> messages to yourself.
                                 </p>
                                 <p className={styles.survivedNote}>
-                                    Kamu cukup kuat untuk menulisnya.
+                                    You were strong enough to write them.
                                 </p>
                             </motion.div>
                         )}
@@ -210,7 +210,7 @@ export default function StormMode({ user, moodRating, onBackToGate }: {
             {/* Subtle exit */}
             <div className={styles.bottomNav}>
                 <button onClick={onBackToGate} className={styles.exitBtn}>
-                    Kembali ke gate
+                    Back to gate
                 </button>
             </div>
         </div>
