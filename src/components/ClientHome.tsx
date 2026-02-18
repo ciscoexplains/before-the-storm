@@ -19,13 +19,13 @@ export default function ClientHome({ user }: { user: any }) {
             // "Ya" path — stable enough to read past messages
             setMode('storm')
         } else {
-            // "Tidak" path — not ready to read, go write instead
-            setMode('write')
+            // "Tidak" path — breathe first, then write
+            setMode('grounding')
         }
     }
 
     const handleGroundingComplete = () => {
-        setMode('storm')
+        setMode('write')
     }
 
     const handleBackToGate = () => {
