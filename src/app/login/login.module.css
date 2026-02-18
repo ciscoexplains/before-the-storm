@@ -122,6 +122,54 @@
     font-style: italic;
 }
 
+.gateQuestion {
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xl);
+    letter-spacing: -0.01em;
+}
+
+.choiceRow {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.rejectedText {
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: var(--space-sm);
+}
+
+.rejectedSub {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: var(--space-lg);
+}
+
+.backLink {
+    display: block;
+    margin: var(--space-lg) auto 0;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.backLink:hover {
+    color: var(--accent-gold);
+}
+
 @keyframes breathe {
 
     0%,

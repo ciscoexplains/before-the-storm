@@ -1,16 +1,39 @@
-import { login } from './actions'
+'use client'
+
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import styles from './login.module.css'
 
-export default async function LoginPage({
-    searchParams,
-}: {
-    searchParams: Promise<{ message?: string; error?: string }>
-}) {
-    const params = await searchParams
+const fadeVariant = {
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' as const } },
+    exit: { opacity: 0, y: -8, transition: { duration: 0.4 } },
+}
+
+export default function LoginPage() {
+    const [step, setStep] = useState<'question' | 'password' | 'rejected'>('question')
+    const [error, setError] = useState('')
+    const [submitting, setSubmitting] = useState(false)
+
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        setSubmitting(true)
+        setError('')
+
+        const formData = new FormData(e.currentTarget)
+        formData.set('email', 'poet@beforethestorm.com')
+
+        try {
+            const { login } = await import('./actions')
+            await login(formData)
+        } catch {
+            setError('Could not authenticate. Try again.')
+            setSubmitting(false)
+        }
+    }
 
     return (
         <div className={styles.container}>
-            {/* Ambient background orbs */}
             <div className={styles.ambientOrb1} />
             <div className={styles.ambientOrb2} />
 
@@ -22,46 +45,95 @@ export default async function LoginPage({
                 </div>
 
                 <div className={styles.card}>
-                    <p className={styles.cardIntro}>
-                        This space is only built when you are strong,<br />
-                        so it can protect you when you are not.
-                    </p>
+                    <AnimatePresence mode="wait">
+                        {step === 'question' && (
+                            <motion.div key="question" {...fadeVariant}>
+                                <p className={styles.cardIntro}>
+                                    This space is only built when you are strong,<br />
+                                    so it can protect you when you are not.
+                                </p>
 
-                    <form className={styles.form}>
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="email">Email</label>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                required
-                                placeholder="your@email.com"
-                                autoComplete="email"
-                            />
-                        </div>
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="password">Password</label>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                required
-                                placeholder="••••••••"
-                                autoComplete="current-password"
-                            />
-                        </div>
+                                <h2 className={styles.gateQuestion}>Are you my wife?</h2>
 
-                        <button formAction={login} className="btn-primary" style={{ width: '100%', marginTop: '0.5rem' }}>
-                            Enter Sanctuary
-                        </button>
-
-                        {params?.error && (
-                            <p className={styles.error}>{params.error}</p>
+                                <div className={styles.choiceRow}>
+                                    <button
+                                        onClick={() => setStep('password')}
+                                        className="btn-primary"
+                                        style={{ flex: 1 }}
+                                    >
+                                        Yes, I am
+                                    </button>
+                                    <button
+                                        onClick={() => setStep('rejected')}
+                                        className="btn-secondary"
+                                        style={{ flex: 1 }}
+                                    >
+                                        No
+                                    </button>
+                                </div>
+                            </motion.div>
                         )}
-                        {params?.message && (
-                            <p className={styles.message}>{params.message}</p>
+
+                        {step === 'password' && (
+                            <motion.div key="password" {...fadeVariant}>
+                                <p className={styles.cardIntro}>
+                                    Welcome home. ♡
+                                </p>
+
+                                <form onSubmit={handleLogin} className={styles.form}>
+                                    <div className={styles.inputGroup}>
+                                        <label htmlFor="password">Password</label>
+                                        <input
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            required
+                                            placeholder="••••••••"
+                                            autoComplete="current-password"
+                                            autoFocus
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={submitting}
+                                        className="btn-primary"
+                                        style={{ width: '100%', marginTop: '0.5rem' }}
+                                    >
+                                        {submitting ? 'Entering...' : 'Enter Sanctuary'}
+                                    </button>
+
+                                    {error && (
+                                        <p className={styles.error}>{error}</p>
+                                    )}
+                                </form>
+
+                                <button
+                                    onClick={() => setStep('question')}
+                                    className={styles.backLink}
+                                >
+                                    ← Go back
+                                </button>
+                            </motion.div>
                         )}
-                    </form>
+
+                        {step === 'rejected' && (
+                            <motion.div key="rejected" {...fadeVariant}>
+                                <p className={styles.rejectedText}>
+                                    I'm sorry, this is only for my wife.
+                                </p>
+                                <p className={styles.rejectedSub}>
+                                    This sanctuary was built for one person only. ♡
+                                </p>
+                                <button
+                                    onClick={() => setStep('question')}
+                                    className={styles.backLink}
+                                >
+                                    ← Go back
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 <p className={styles.footer}>
