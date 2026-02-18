@@ -377,6 +377,30 @@ textarea {
   }
 }
 
+/* — Global Footer — */
+.global-footer {
+  position: fixed;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  font-family: var(--font-serif);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.5;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .global-footer {
+    font-size: 0.6rem;
+    bottom: 0.5rem;
+  }
+}
+
 /* — Scrollbar — */
 ::-webkit-scrollbar {
   width: 6px;

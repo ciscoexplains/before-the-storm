@@ -33,6 +33,9 @@ export default function RootLayout({
           Before the Storm <em>for Ananda</em>
         </div>
         {children}
+        <footer className="global-footer">
+          Made with love, crafted exclusively for Ananda — by Julian ♡
+        </footer>
       </body>
     </html>
   );
