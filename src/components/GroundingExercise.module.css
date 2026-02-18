@@ -1,0 +1,158 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--space-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.ambientOrb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(100, 130, 180, 0.04) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+}
+
+.step {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding: var(--space-xl);
+}
+
+.icon {
+    font-size: 2rem;
+    color: var(--accent-gold);
+    margin-bottom: var(--space-xl);
+    opacity: 0.7;
+}
+
+.gentleText {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: var(--space-lg);
+    font-weight: 300;
+}
+
+.gentleTextSmall {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: var(--space-2xl);
+    font-style: italic;
+}
+
+/* Breathing */
+.breatheArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-2xl);
+    min-height: 240px;
+}
+
+.breatheCircle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 165, 116, 0.25) 0%, rgba(212, 165, 116, 0.05) 70%);
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    box-shadow: 0 0 60px rgba(212, 165, 116, 0.1);
+}
+
+.breatheLabel {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.breatheCount {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Buttons */
+.softBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 2rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.softBtn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.enterBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 2.5rem;
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-sm);
+    color: var(--accent-gold);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: var(--space-xl);
+}
+
+.enterBtn:hover {
+    background: var(--accent-gold-glow);
+    box-shadow: 0 0 24px var(--accent-gold-glow);
+}
+
+.closingText {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    line-height: 1.7;
+    margin-bottom: var(--space-2xl);
+    font-weight: 300;
+}
+
+.closingNote {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.6;
+}
+
+@media (max-width: 640px) {
+    .gentleText {
+        font-size: 1.15rem;
+    }
+
+    .breatheCircle {
+        width: 80px;
+        height: 80px;
+    }
+}

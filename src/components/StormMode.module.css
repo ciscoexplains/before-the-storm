@@ -1,0 +1,292 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--space-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Deep atmosphere background */
+.ambientBg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        linear-gradient(180deg, #0B1120 0%, #0D0F1A 40%, #111318 100%),
+        radial-gradient(ellipse 60% 50% at 50% 50%, rgba(100, 120, 180, 0.03) 0%, transparent 70%);
+    z-index: -1;
+}
+
+/* Loading */
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xl);
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.loadingOrb {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 165, 116, 0.2) 0%, transparent 70%);
+    animation: breathe 3s ease-in-out infinite;
+}
+
+/* Empty state */
+.emptyState {
+    text-align: center;
+    max-width: 500px;
+}
+
+.emptyState h2 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    font-weight: 300;
+    margin-bottom: var(--space-lg);
+}
+
+.emptyState p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: var(--space-2xl);
+}
+
+/* Message Screen */
+.messageScreen {
+    max-width: 640px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-2xl) 0;
+}
+
+.capsuleTitle {
+    font-size: 2.25rem;
+    color: var(--text-primary);
+    font-weight: 300;
+    margin-bottom: var(--space-2xl);
+    line-height: 1.3;
+}
+
+.capsuleMessage {
+    font-size: 1.2rem;
+    line-height: 2;
+    color: rgba(245, 240, 235, 0.85);
+    margin-bottom: var(--space-2xl);
+    max-width: 540px;
+}
+
+.capsuleMessage p {
+    color: inherit;
+    margin-bottom: var(--space-md);
+}
+
+.capsuleMessage p:last-child {
+    margin-bottom: 0;
+}
+
+/* Reminder */
+.reminderBlock {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: rgba(212, 165, 116, 0.06);
+    border: 1px solid rgba(212, 165, 116, 0.15);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-2xl);
+    color: var(--accent-gold-light);
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
+.reminderIcon {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Support Message */
+.supportBlock {
+    width: 100%;
+    max-width: 480px;
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-xl);
+    text-align: left;
+}
+
+.supportLabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-sm);
+}
+
+.supportText {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-style: italic;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    justify-content: center;
+    margin-bottom: var(--space-xl);
+}
+
+.survivedBtn {
+    padding: 0.875rem 2rem;
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    border-radius: var(--radius-full);
+    color: var(--accent-gold);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+}
+
+.survivedBtn:hover {
+    background: var(--accent-gold-glow);
+    box-shadow: 0 0 24px var(--accent-gold-glow);
+}
+
+.nextBtn {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.03em;
+}
+
+.nextBtn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-secondary);
+}
+
+.ghostBtn {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ghostBtn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-secondary);
+}
+
+/* Survived Stats */
+.survivedBlock {
+    text-align: center;
+    padding: var(--space-lg);
+    background: rgba(212, 165, 116, 0.04);
+    border: 1px solid rgba(212, 165, 116, 0.1);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-xl);
+    max-width: 440px;
+}
+
+.survivedStat {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.survivedStat strong {
+    color: var(--accent-gold);
+    font-size: 1.2em;
+}
+
+.survivedNote {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Bottom Nav */
+.bottomNav {
+    position: fixed;
+    bottom: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.exitBtn {
+    padding: 0.5rem 1.25rem;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.exitBtn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-secondary);
+}
+
+@keyframes breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .capsuleTitle {
+        font-size: 1.75rem;
+    }
+
+    .capsuleMessage {
+        font-size: 1.05rem;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
