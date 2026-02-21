@@ -67,7 +67,11 @@ export default function JulianDashboard() {
         setSending(true)
         setError('')
         try {
-            await saveSupportMessage(selectedCapsule.id, newMessage.trim())
+            const result = await saveSupportMessage(selectedCapsule.id, newMessage.trim())
+            if (!result.success) {
+                setError(result.error || 'Failed to send message. Please try again.')
+                return
+            }
             setSuccess(true)
             setNewMessage('')
             // Refresh messages

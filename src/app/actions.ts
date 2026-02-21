@@ -65,24 +65,29 @@ export async function fetchAnandaCapsules() {
 }
 
 export async function saveSupportMessage(capsuleId: string, message: string) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    try {
+        const supabase = await createClient()
+        const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user || user.email !== 'julian@beforethestorm.com') {
-        throw new Error('Unauthorized')
+        if (!user || user.email !== 'julian@beforethestorm.com') {
+            return { success: false, error: 'Unauthorized' }
+        }
+
+        const { error } = await supabase.from('support_messages').insert({
+            capsule_id: capsuleId,
+            sender_name: 'Julian',
+            message,
+        })
+
+        if (error) {
+            console.error('Error saving support message:', error)
+            return { success: false, error: error.message }
+        }
+        return { success: true, error: null }
+    } catch (err: any) {
+        console.error('Unexpected error in saveSupportMessage:', err)
+        return { success: false, error: err.message || 'An unexpected error occurred' }
     }
-
-    const { error } = await supabase.from('support_messages').insert({
-        capsule_id: capsuleId,
-        sender_name: 'Julian',
-        message,
-    })
-
-    if (error) {
-        console.error('Error saving support message:', error)
-        throw new Error(error.message)
-    }
-    return { success: true }
 }
 
 export async function fetchSupportMessages(capsuleId: string) {
