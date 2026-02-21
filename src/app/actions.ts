@@ -73,8 +73,20 @@ export async function saveSupportMessage(capsuleId: string, message: string) {
             return { success: false, error: 'Unauthorized' }
         }
 
+        // Get the capsule to find Ananda's user_id for recipient_id
+        const { data: capsule, error: capsuleError } = await supabase
+            .from('emotional_capsules')
+            .select('user_id')
+            .eq('id', capsuleId)
+            .single()
+
+        if (capsuleError || !capsule) {
+            return { success: false, error: 'Could not find the storm' }
+        }
+
         const { error } = await supabase.from('support_messages').insert({
             capsule_id: capsuleId,
+            recipient_id: capsule.user_id,
             sender_name: 'Julian',
             message,
         })
