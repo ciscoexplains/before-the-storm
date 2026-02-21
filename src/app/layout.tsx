@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
+import RainEffect from "@/components/RainEffect";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${fraunces.variable}`}>
+        <RainEffect />
         <div className="global-brand">
           <span className="global-brand-icon">☁</span>
           Before the Storm <em>for Ananda</em>
