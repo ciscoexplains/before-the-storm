@@ -229,13 +229,11 @@ export async function fetchConstellationData(): Promise<StarData[]> {
 
 // ─── Stream of Consciousness ───
 
-export type AnalysisResult = {
+export async function analyzeConsciousness(text: string): Promise<{
     success: boolean
     data?: string
     error?: string
-}
-
-export async function analyzeConsciousness(text: string): Promise<AnalysisResult> {
+}> {
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY
     if (!GEMINI_API_KEY) {
         console.error('[analyzeConsciousness] GEMINI_API_KEY is not set')
