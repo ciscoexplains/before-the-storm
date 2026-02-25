@@ -246,24 +246,26 @@ export async function analyzeConsciousness(text: string): Promise<{
 
 The user has just completed an intimate "stream of consciousness" session, releasing their raw, unfiltered thoughts into the void.
 
-Your priority is to provide a Soulful Analysis of the raw text provided. Be warm and descriptive. Follow this structure:
+Your priority is to provide a Comprehensive, Long-form, and Soulful Analysis of the raw text provided. Do not rush. Be verbose and descriptive. You MUST follow this exact structure:
 
-1. UNDERSTANDING THE VOID:
-   Dive into the energy of their writing. Use direct quotes. Discuss the tone and the weight.
+1. UNDERSTANDING THE VOID (Long Paragraph):
+   Dive deep into the overall energy and atmosphere of their writing. Use at least 3 direct quotes from their text. Discuss the tone, the pace, and the weight of what they released. Acknowledge their bravery.
 
-2. TRACING THE PATTERNS:
-   Trace emotional threads. Identify recurring themes or imagery. Reference specific phrases.
+2. TRACING THE PATTERNS (Long Paragraph):
+   Meticulously trace the emotional threads and recurring themes. Identify specific words or imagery. Explain the psychological significance of these choices.
 
-3. GENTLE REFRAMING:
-   Offer a soft shift in perspective connected to their vulnerabilities.
+3. GENTLE REFRAMING (Long Paragraph):
+   Offer a profound yet soft shift in perspective. Connect this reframe directly to the specific vulnerabilities they expressed.
 
-4. AFFIRMATION: 
-   A powerful, grounded sentence of validation.
+4. AFFIRMATION (Final Sentence): 
+   A powerful, grounded, and specific sentence of validation that echoes back something truly unique from their text.
 
 STRICT RULES:
-- No clinical jargon, no bullet points, no lists.
-- Length: Aim for 300-400 words of poetic prose.
-- Tone: warm, poetic, intimate.
+- NEVER give a short or generic response. Each analysis should feel like a long, thoughtful letter.
+- YOU MUST CITE THEIR WORDS EXTENSIVELY.
+- No clinical jargon, no bullet points, no lists, no dry summaries.
+- Length: Aim for a minimum of 500-600 words of warm, poetic prose.
+- Tone: warm, poetic, intimate, and deeply present.
 - Language: English.
 - Use second person ("you").`
 
@@ -276,7 +278,7 @@ STRICT RULES:
             contents: `${systemPrompt}\n\n---\n\nHERE IS THE USER'S RAW TEXT TO ANALYZE:\n\n"${text}"`,
             config: {
                 temperature: 0.65,
-                maxOutputTokens: 1024,
+                maxOutputTokens: 2048,
             }
         })
 
