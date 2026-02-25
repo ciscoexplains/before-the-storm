@@ -39,30 +39,44 @@ export default function StreamOfConsciousness({ onBack }: { onBack: () => void }
         }
     }, [])
 
+    const commitWord = useCallback((wordStr: string) => {
+        const word = wordStr.trim()
+        if (!word) return
+
+        const id = wordIdCounter.current++
+        fullTextRef.current.push(word)
+        setWordCount(prev => prev + 1)
+        setInputValue('')
+
+        // Add word to visible list
+        const timer = setTimeout(() => {
+            setVisibleWords(prev => prev.filter(w => w.id !== id))
+        }, WORD_FADE_MS)
+
+        setVisibleWords(prev => [
+            ...prev,
+            { id, text: word, opacity: 1, timerId: timer }
+        ])
+    }, [])
+
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        // Detect space or enter = word boundary
-        if (e.key === ' ' || e.key === 'Enter') {
-            const word = inputValue.trim()
-            if (!word) return
-
+        // Still handle Enter via keydown for immediate feedback
+        if (e.key === 'Enter') {
             e.preventDefault()
-
-            const id = wordIdCounter.current++
-            fullTextRef.current.push(word)
-            setWordCount(prev => prev + 1)
-            setInputValue('')
-
-            // Add word to visible list
-            const timer = setTimeout(() => {
-                setVisibleWords(prev => prev.filter(w => w.id !== id))
-            }, WORD_FADE_MS)
-
-            setVisibleWords(prev => [
-                ...prev,
-                { id, text: word, opacity: 1, timerId: timer }
-            ])
+            commitWord(inputValue)
         }
-    }, [inputValue])
+    }, [inputValue, commitWord])
+
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const val = e.target.value
+
+        // If the last character is a space, commit the current word
+        if (val.endsWith(' ')) {
+            commitWord(val)
+        } else {
+            setInputValue(val)
+        }
+    }, [commitWord])
 
     const handleEnough = useCallback(async () => {
         // Also commit any partial word in the input
@@ -178,7 +192,7 @@ export default function StreamOfConsciousness({ onBack }: { onBack: () => void }
                             ref={textAreaRef}
                             className={styles.hiddenTextarea}
                             value={inputValue}
-                            onChange={e => setInputValue(e.target.value)}
+                            onChange={handleInputChange}
                             onKeyDown={handleKeyDown}
                             autoFocus
                             spellCheck={false}
