@@ -262,9 +262,12 @@ STRICT RULES:
 - Language: English.
 - Use second person ("you").`
 
+    console.log(`[analyzeConsciousness] Starting analysis with ${text.length} chars...`)
+    const startTime = Date.now()
+
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-3-flash-preview",
+            model: "gemini-1.5-flash",
             contents: [{
                 role: "user",
                 parts: [{
@@ -277,11 +280,18 @@ STRICT RULES:
             }
         })
 
+        const duration = Date.now() - startTime
+        console.log(`[analyzeConsciousness] Analysis completed in ${duration}ms`)
+
         const analysis = response.text
-        if (!analysis) throw new Error('No analysis returned from Gemini')
+        if (!analysis) {
+            console.error('[analyzeConsciousness] Empty response from Gemini')
+            throw new Error('No analysis returned from Gemini')
+        }
         return analysis
     } catch (err: any) {
-        console.error('Gemini SDK error:', err)
+        const duration = Date.now() - startTime
+        console.error(`[analyzeConsciousness] Failed after ${duration}ms:`, err)
         throw new Error(`Gemini SDK error: ${err.message || err}`)
     }
 }
