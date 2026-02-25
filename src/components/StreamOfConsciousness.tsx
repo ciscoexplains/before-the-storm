@@ -115,17 +115,24 @@ export default function StreamOfConsciousness({ onBack }: { onBack: () => void }
 
         try {
             const result = await analyzeConsciousness(fullText)
-            setAnalysis(result)
-            setPhase('result')
 
-            // Save to DB (fire and forget, don't block the UI)
-            saveConsciousnessEntry(fullText, result).catch(err => {
-                console.error('Failed to save consciousness entry:', err)
-                setSaveError('Could not save this session, but your analysis is ready.')
-            })
+            if (result.success && result.data) {
+                setAnalysis(result.data)
+                setPhase('result')
+
+                // Save to DB (fire and forget, don't block the UI)
+                saveConsciousnessEntry(fullText, result.data).catch(err => {
+                    console.error('Failed to save consciousness entry:', err)
+                    setSaveError('Could not save this session, but your analysis is ready.')
+                })
+            } else {
+                console.error('Gemini analysis failed:', result.error)
+                setAnalysis(`Something went wrong while reading your words: ${result.error || 'Server limit reached'}. But you did something brave by writing them.`)
+                setPhase('result')
+            }
         } catch (err) {
-            console.error('Gemini analysis failed:', err)
-            setAnalysis('Something went wrong while reading your words. But you did something brave by writing them.')
+            console.error('Gemini analysis failed (catch):', err)
+            setAnalysis('An error occurred. Your words were still heard by the void, even if the analysis failed.')
             setPhase('result')
         }
     }, [inputValue, onBack])

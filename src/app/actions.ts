@@ -229,9 +229,18 @@ export async function fetchConstellationData(): Promise<StarData[]> {
 
 // ─── Stream of Consciousness ───
 
-export async function analyzeConsciousness(text: string): Promise<string> {
+export type AnalysisResult = {
+    success: boolean
+    data?: string
+    error?: string
+}
+
+export async function analyzeConsciousness(text: string): Promise<AnalysisResult> {
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY
-    if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not set')
+    if (!GEMINI_API_KEY) {
+        console.error('[analyzeConsciousness] GEMINI_API_KEY is not set')
+        return { success: false, error: 'Environment configuration missing' }
+    }
 
     const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY })
 
@@ -239,30 +248,28 @@ export async function analyzeConsciousness(text: string): Promise<string> {
 
 The user has just completed an intimate "stream of consciousness" session, releasing their raw, unfiltered thoughts into the void.
 
-Your absolute priority is to provide a Comprehensive, Long-form, and Soulful Analysis of the raw text provided. Do not rush. Be verbose and descriptive. You MUST follow this exact structure:
+Your priority is to provide a Soulful Analysis of the raw text provided. Be warm and descriptive. Follow this structure:
 
-1. UNDERSTANDING THE VOID (Long Paragraph):
-   Dive deep into the overall energy and atmosphere of their writing. Use at least 3 direct quotes from their text. Discuss the tone, the pace, and the weight of what they released. Acknowledge their bravery in letting these words surface.
+1. UNDERSTANDING THE VOID:
+   Dive into the energy of their writing. Use direct quotes. Discuss the tone and the weight.
 
-2. TRACING THE PATTERNS (Long Paragraph):
-   Meticulously trace the emotional threads and recurring themes. Identify specific words or imagery that appear. Use at least 3-4 more direct quotes or referenced phrases. Explain the psychological significance of these particular choices in the context of their current emotional landscape.
+2. TRACING THE PATTERNS:
+   Trace emotional threads. Identify recurring themes or imagery. Reference specific phrases.
 
-3. GENTLE REFRAMING (Long Paragraph):
-   Offer a profound yet soft shift in perspective. This shouldn't be a quick fix, but a meaningful reflection. Connect this reframe directly to the specific vulnerabilities they expressed.
+3. GENTLE REFRAMING:
+   Offer a soft shift in perspective connected to their vulnerabilities.
 
-4. AFFIRMATION (Final Sentence): 
-   A powerful, grounded, and specific sentence of validation that echoes back something truly unique from their text.
+4. AFFIRMATION: 
+   A powerful, grounded sentence of validation.
 
 STRICT RULES:
-- NEVER give a short or generic response. Each analysis should feel like a long, thoughtful letter written only for them.
-- YOU MUST CITE THEIR WORDS EXTENSIVELY. The depth of your analysis is measured by how well you weave their own vocabulary into your insights.
-- No clinical jargon, no bullet points, no lists, no dry summaries.
-- Length: Aim for a minimum of 400-500 words of warm, poetic prose.
-- Tone: warm, poetic, intimate, and deeply present.
+- No clinical jargon, no bullet points, no lists.
+- Length: Aim for 300-400 words of poetic prose.
+- Tone: warm, poetic, intimate.
 - Language: English.
 - Use second person ("you").`
 
-    console.log(`[analyzeConsciousness] Starting analysis with ${text.length} chars...`)
+    console.log(`[analyzeConsciousness] Starting analysis (${text.length} chars)...`)
     const startTime = Date.now()
 
     try {
@@ -276,23 +283,25 @@ STRICT RULES:
             }],
             config: {
                 temperature: 0.65,
-                maxOutputTokens: 2048,
+                maxOutputTokens: 1024,
             }
         })
 
         const duration = Date.now() - startTime
-        console.log(`[analyzeConsciousness] Analysis completed in ${duration}ms`)
+        console.log(`[analyzeConsciousness] Completed in ${duration}ms`)
 
         const analysis = response.text
         if (!analysis) {
-            console.error('[analyzeConsciousness] Empty response from Gemini')
-            throw new Error('No analysis returned from Gemini')
+            return { success: false, error: 'Empty response from AI' }
         }
-        return analysis
+        return { success: true, data: analysis }
     } catch (err: any) {
         const duration = Date.now() - startTime
         console.error(`[analyzeConsciousness] Failed after ${duration}ms:`, err)
-        throw new Error(`Gemini SDK error: ${err.message || err}`)
+        return {
+            success: false,
+            error: err.message || 'An unexpected error occurred during analysis'
+        }
     }
 }
 
