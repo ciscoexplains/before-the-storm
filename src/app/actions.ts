@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { GoogleGenAI } from "@google/genai"
 
 export async function checkStabilityGate(rating: number) {
     // Server-side gate logic — cannot be bypassed client-side
@@ -225,3 +226,79 @@ export async function fetchConstellationData(): Promise<StarData[]> {
 
     return stars.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 }
+
+// ─── Stream of Consciousness ───
+
+export async function analyzeConsciousness(text: string): Promise<string> {
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY
+    if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not set')
+
+    const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY })
+
+    const systemPrompt = `You are a legendary therapist, warm and deeply empathetic, specializing in emotional support for people with Borderline Personality Disorder (BPD).
+
+The user has just completed an intimate "stream of consciousness" session, releasing their raw, unfiltered thoughts into the void.
+
+Your absolute priority is to provide a Comprehensive, Long-form, and Soulful Analysis of the raw text provided. Do not rush. Be verbose and descriptive. You MUST follow this exact structure:
+
+1. UNDERSTANDING THE VOID (Long Paragraph):
+   Dive deep into the overall energy and atmosphere of their writing. Use at least 3 direct quotes from their text. Discuss the tone, the pace, and the weight of what they released. Acknowledge their bravery in letting these words surface.
+
+2. TRACING THE PATTERNS (Long Paragraph):
+   Meticulously trace the emotional threads and recurring themes. Identify specific words or imagery that appear. Use at least 3-4 more direct quotes or referenced phrases. Explain the psychological significance of these particular choices in the context of their current emotional landscape.
+
+3. GENTLE REFRAMING (Long Paragraph):
+   Offer a profound yet soft shift in perspective. This shouldn't be a quick fix, but a meaningful reflection. Connect this reframe directly to the specific vulnerabilities they expressed.
+
+4. AFFIRMATION (Final Sentence): 
+   A powerful, grounded, and specific sentence of validation that echoes back something truly unique from their text.
+
+STRICT RULES:
+- NEVER give a short or generic response. Each analysis should feel like a long, thoughtful letter written only for them.
+- YOU MUST CITE THEIR WORDS EXTENSIVELY. The depth of your analysis is measured by how well you weave their own vocabulary into your insights.
+- No clinical jargon, no bullet points, no lists, no dry summaries.
+- Length: Aim for a minimum of 400-500 words of warm, poetic prose.
+- Tone: warm, poetic, intimate, and deeply present.
+- Language: English.
+- Use second person ("you").`
+
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: [{
+                role: "user",
+                parts: [{
+                    text: `${systemPrompt}\n\n---\n\nHERE IS THE USER'S RAW TEXT TO ANALYZE:\n\n"${text}"`
+                }]
+            }],
+            config: {
+                temperature: 0.65,
+                maxOutputTokens: 2048,
+            }
+        })
+
+        const analysis = response.text
+        if (!analysis) throw new Error('No analysis returned from Gemini')
+        return analysis
+    } catch (err: any) {
+        console.error('Gemini SDK error:', err)
+        throw new Error(`Gemini SDK error: ${err.message || err}`)
+    }
+}
+
+export async function saveConsciousnessEntry(rawText: string, geminiAnalysis: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) throw new Error('Not authenticated')
+
+    const { error } = await supabase.from('consciousness_entries').insert({
+        user_id: user.id,
+        raw_text: rawText,
+        gemini_analysis: geminiAnalysis,
+    })
+
+    if (error) throw new Error(error.message)
+    return { success: true }
+}
+

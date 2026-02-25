@@ -8,9 +8,10 @@ import StormMode from './StormMode'
 import GroundingExercise from './GroundingExercise'
 import SailMode from './SailMode'
 import ConstellationMap from './ConstellationMap'
+import StreamOfConsciousness from './StreamOfConsciousness'
 import styles from './ClientHome.module.css'
 
-type AppMode = 'gate' | 'write' | 'storm' | 'grounding' | 'sail' | 'constellation'
+type AppMode = 'gate' | 'write' | 'storm' | 'grounding' | 'sail' | 'constellation' | 'stream'
 
 export default function ClientHome({ user }: { user: any }) {
     const [mode, setMode] = useState<AppMode>('gate')
@@ -42,6 +43,10 @@ export default function ClientHome({ user }: { user: any }) {
         setMode('constellation')
     }
 
+    const handleStreamMode = () => {
+        setMode('stream')
+    }
+
     return (
         <div className={styles.appContainer}>
             <AnimatePresence mode="wait">
@@ -58,6 +63,7 @@ export default function ClientHome({ user }: { user: any }) {
                             onComplete={handleGateComplete}
                             onSail={handleSailMode}
                             onConstellation={handleConstellationMode}
+                            onStream={handleStreamMode}
                         />
                     </motion.div>
                 )}
@@ -122,6 +128,18 @@ export default function ClientHome({ user }: { user: any }) {
                         style={{ width: '100%' }}
                     >
                         <ConstellationMap onBack={handleBackToGate} />
+                    </motion.div>
+                )}
+                {mode === 'stream' && (
+                    <motion.div
+                        key="stream"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1.5 }}
+                        style={{ width: '100%' }}
+                    >
+                        <StreamOfConsciousness onBack={handleBackToGate} />
                     </motion.div>
                 )}
             </AnimatePresence>

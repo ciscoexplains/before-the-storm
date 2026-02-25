@@ -120,7 +120,8 @@ function buildCentroids(stars: PositionedStar[]): Centroid[] {
         monthKey,
         label: getMonthLabel(monthKey),
         x: group.reduce((sum, s) => sum + s.x, 0) / group.length,
-        y: Math.min(...group.map(s => s.y)) - 5, // Increased spacing
+        // clamp so label never goes above the SVG (viewBox y ≥ 3)
+        y: Math.max(3, Math.min(...group.map(s => s.y)) - 5),
     }))
 }
 
@@ -333,23 +334,23 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                         ))}
 
                         {/* Stars */}
-                        {stars.map((star, i) => (
-                            <g key={star.id}>
+                        {stars.map((star, i) => {
+                            const isSelected = selectedStar?.id === star.id
+                            return (
                                 <motion.circle
+                                    key={star.id}
                                     cx={star.x}
                                     cy={star.y}
                                     r={star.radius * 0.8}
                                     fill={star.color}
                                     filter={`url(#glow-${star.type})`}
-                                    style={{
-                                        cursor: 'pointer',
-                                        outline: selectedStar?.id === star.id ? '1px solid rgba(255,255,255,0.4)' : 'none',
-                                        outlineOffset: '4px'
-                                    }}
+                                    stroke={isSelected ? 'rgba(255,255,255,0.5)' : 'none'}
+                                    strokeWidth={isSelected ? 0.4 : 0}
+                                    style={{ cursor: 'pointer' }}
                                     initial={{ opacity: 0, scale: 0 }}
                                     animate={{
                                         opacity: [0, 1, 0.7, 1],
-                                        scale: selectedStar?.id === star.id ? 1.4 : 1,
+                                        scale: isSelected ? 1.4 : 1,
                                     }}
                                     transition={{
                                         delay: 0.5 + i * 0.05,
@@ -359,51 +360,55 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                                     }}
                                     onClick={(e) => handleStarClick(e, star)}
                                 />
-
-                                {/* Selected Star Details */}
-                                <AnimatePresence>
-                                    {selectedStar?.id === star.id && (
-                                        <foreignObject
-                                            x={star.x - 20}
-                                            y={star.y - 30}
-                                            width="40"
-                                            height="30"
-                                            style={{ overflow: 'visible', pointerEvents: 'none' }}
-                                        >
-                                            <motion.div
-                                                className={styles.tooltip}
-                                                style={{ pointerEvents: 'auto' }}
-                                                initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                                                transition={{ duration: 0.3, ease: 'easeOut' }}
-                                                onClick={(e) => e.stopPropagation()}
-                                            >
-                                                <div className={styles.tooltipHeader}>
-                                                    <span
-                                                        className={styles.tooltipDot}
-                                                        style={{ background: selectedStar.color, boxShadow: `0 0 10px ${selectedStar.color}` }}
-                                                    />
-                                                    <span className={styles.tooltipType}>
-                                                        {TYPE_LABELS[selectedStar.type as StarType]}
-                                                    </span>
-                                                </div>
-                                                <span className={styles.tooltipRating}>
-                                                    {selectedStar.rating}/10
-                                                </span>
-                                                <span className={styles.tooltipDate}>
-                                                    {new Date(selectedStar.date).toLocaleDateString('en-US', {
-                                                        month: 'long', day: 'numeric'
-                                                    })}
-                                                </span>
-                                            </motion.div>
-                                        </foreignObject>
-                                    )}
-                                </AnimatePresence>
-                            </g>
-                        ))}
+                            )
+                        })}
                     </svg>
                 )}
+
+                {/* Selected Star Details (Absolute HTML overlay for constant sizing) */}
+                <AnimatePresence>
+                    {selectedStar && (() => {
+                        // Shift tooltip horizontally so it doesn't clip off left/right edges
+                        const edgeShift =
+                            selectedStar.x < 20 ? '0%'
+                                : selectedStar.x > 80 ? '-100%'
+                                    : '-50%'
+                        return (
+                            <motion.div
+                                className={styles.tooltip}
+                                style={{
+                                    left: `${selectedStar.x}%`,
+                                    top: `${selectedStar.y}%`,
+                                    transform: `translate(${edgeShift}, calc(-100% - 10px))`,
+                                    pointerEvents: 'auto'
+                                }}
+                                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                transition={{ duration: 0.2, ease: 'easeOut' }}
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <div className={styles.tooltipHeader}>
+                                    <span
+                                        className={styles.tooltipDot}
+                                        style={{ background: selectedStar.color, boxShadow: `0 0 10px ${selectedStar.color}` }}
+                                    />
+                                    <span className={styles.tooltipType}>
+                                        {TYPE_LABELS[selectedStar.type as StarType]}
+                                    </span>
+                                </div>
+                                <span className={styles.tooltipRating}>
+                                    {selectedStar.rating}/10
+                                </span>
+                                <span className={styles.tooltipDate}>
+                                    {new Date(selectedStar.date).toLocaleDateString('en-US', {
+                                        month: 'short', day: 'numeric'
+                                    })}
+                                </span>
+                            </motion.div>
+                        )
+                    })()}
+                </AnimatePresence>
             </div>
 
             {/* Legend */}

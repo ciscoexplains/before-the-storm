@@ -1,0 +1,380 @@
+/* ─────────────────────────────────────────────
+   StreamOfConsciousness — into the void
+───────────────────────────────────────────── */
+
+.container {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(170deg, #020308 0%, #040612 40%, #060b1a 70%, #030509 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 100;
+}
+
+/* Ambient depth layers */
+.ambient1 {
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 500px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(80, 50, 140, 0.06) 0%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+    animation: ambientDrift1 40s ease-in-out infinite;
+}
+
+.ambient2 {
+    position: absolute;
+    bottom: 15%;
+    right: 20%;
+    width: 400px;
+    height: 350px;
+    background: radial-gradient(ellipse, rgba(30, 60, 120, 0.04) 0%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+    animation: ambientDrift2 55s ease-in-out infinite;
+}
+
+@keyframes ambientDrift1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(-20px, 30px) scale(1.1);
+    }
+}
+
+@keyframes ambientDrift2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(25px, -20px) scale(0.9);
+    }
+}
+
+/* Back button */
+.backBtn {
+    position: absolute;
+    top: 1.4rem;
+    right: 1.6rem;
+    z-index: 20;
+    background: transparent;
+    border: 1px solid rgba(180, 170, 220, 0.1);
+    color: rgba(180, 170, 220, 0.35);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.backBtn:hover {
+    color: rgba(200, 190, 240, 0.6);
+    border-color: rgba(200, 190, 240, 0.2);
+}
+
+/* ── WRITING PHASE ── */
+
+.writingWrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 680px;
+    padding: 2rem 2rem 4rem;
+    gap: 2rem;
+    position: relative;
+    z-index: 5;
+}
+
+.header {
+    text-align: center;
+}
+
+.instruction {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: rgba(200, 190, 240, 0.45);
+    letter-spacing: 0.04em;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.instructionSub {
+    font-size: 0.78rem;
+    color: rgba(180, 170, 220, 0.28);
+    display: block;
+    margin-top: 0.4rem;
+}
+
+/* Fading words stage */
+.wordsStage {
+    min-height: 120px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 0.5rem 0.7rem;
+    padding: 1.5rem 1.5rem;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(200, 190, 255, 0.05);
+    border-radius: 12px;
+    position: relative;
+}
+
+.fadingWord {
+    font-family: Georgia, serif;
+    font-size: 1.05rem;
+    color: rgba(220, 215, 255, 0.75);
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+}
+
+.placeholder {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: rgba(180, 170, 220, 0.2);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Hidden textarea — visible enough to use on mobile too */
+.hiddenTextarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(200, 190, 255, 0.08);
+    border-radius: 8px;
+    color: rgba(220, 215, 255, 0.8);
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    resize: none;
+    outline: none;
+    caret-color: rgba(200, 180, 255, 0.7);
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    transition: border-color 0.3s;
+}
+
+.hiddenTextarea:focus {
+    border-color: rgba(200, 180, 255, 0.18);
+}
+
+.hiddenTextarea::placeholder {
+    color: rgba(180, 170, 220, 0.2);
+    font-style: italic;
+}
+
+.wordCounter {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.72rem;
+    color: rgba(180, 170, 220, 0.22);
+    letter-spacing: 0.06em;
+    margin: -0.5rem 0 0;
+    text-align: center;
+}
+
+/* It's Enough button */
+.enoughBtn {
+    margin-top: 0.5rem;
+    padding: 0.7rem 2.5rem;
+    background: transparent;
+    border: 1px solid rgba(200, 180, 255, 0.2);
+    border-radius: 40px;
+    color: rgba(210, 200, 255, 0.6);
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.enoughBtn:hover {
+    background: rgba(200, 180, 255, 0.06);
+    border-color: rgba(200, 180, 255, 0.4);
+    color: rgba(225, 215, 255, 0.9);
+}
+
+/* ── ANALYZING PHASE ── */
+
+.analyzingWrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 5;
+}
+
+.listeningOrb {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(180, 150, 255, 0.35) 0%, rgba(100, 80, 200, 0.08) 100%);
+    box-shadow: 0 0 40px rgba(180, 150, 255, 0.15);
+}
+
+.listeningText {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: rgba(200, 190, 240, 0.5);
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.listeningSubtext {
+    font-size: 0.72rem;
+    color: rgba(180, 170, 220, 0.25);
+    font-style: italic;
+    margin: -0.5rem 0 0;
+    font-family: Georgia, serif;
+}
+
+/* ── RESULT PHASE ── */
+
+.resultWrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 680px;
+    padding: 2rem 2rem 5rem;
+    gap: 1.8rem;
+    overflow-y: auto;
+    max-height: 100vh;
+    z-index: 5;
+}
+
+.rawTextCard {
+    width: 100%;
+    padding: 1.4rem 1.8rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(200, 190, 255, 0.07);
+    border-radius: 10px;
+}
+
+.rawTextLabel {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(180, 170, 220, 0.3);
+    margin: 0 0 0.8rem;
+    font-family: inherit;
+}
+
+.rawText {
+    font-family: Georgia, serif;
+    font-size: 0.9rem;
+    color: rgba(200, 190, 240, 0.45);
+    line-height: 1.8;
+    margin: 0;
+    font-style: italic;
+}
+
+.divider {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(200, 180, 255, 0.12), transparent);
+    transform-origin: center;
+}
+
+.analysisCard {
+    width: 100%;
+    padding: 1.8rem 2rem;
+    background: rgba(180, 150, 255, 0.03);
+    border: 1px solid rgba(200, 180, 255, 0.1);
+    border-radius: 12px;
+}
+
+.analysisLabel {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(200, 180, 255, 0.35);
+    margin: 0 0 1.2rem;
+    font-family: inherit;
+}
+
+.analysisText {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.analysisText p {
+    font-family: Georgia, serif;
+    font-size: 0.92rem;
+    color: rgba(220, 215, 255, 0.72);
+    line-height: 1.9;
+    margin: 0;
+}
+
+.saveError {
+    font-size: 0.72rem;
+    color: rgba(255, 180, 150, 0.4);
+    font-style: italic;
+    text-align: center;
+    margin: -0.5rem 0 0;
+}
+
+.doneBtn {
+    margin-top: 0.5rem;
+    padding: 0.65rem 2rem;
+    background: transparent;
+    border: 1px solid rgba(180, 170, 220, 0.15);
+    border-radius: 40px;
+    color: rgba(180, 170, 220, 0.4);
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.doneBtn:hover {
+    border-color: rgba(200, 190, 240, 0.3);
+    color: rgba(210, 200, 255, 0.7);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+
+    .writingWrap,
+    .resultWrap {
+        padding: 1.5rem 1.2rem 5rem;
+    }
+
+    .wordsStage {
+        min-height: 90px;
+    }
+
+    .fadingWord {
+        font-size: 0.95rem;
+    }
+
+    .analysisText p {
+        font-size: 0.87rem;
+    }
+}

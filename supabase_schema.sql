@@ -110,3 +110,26 @@ CREATE POLICY "Users can insert their own grounding completions"
 CREATE POLICY "Users can read their own grounding completions"
   ON grounding_completions FOR SELECT
   USING (auth.uid() = user_id);
+
+-- ============================================
+-- Table: consciousness_entries (Stream of Consciousness feature)
+-- Raw unfiltered text typed by user + Gemini therapist analysis.
+-- ⚠️  Run this in Supabase SQL Editor to create the table:
+-- ============================================
+CREATE TABLE IF NOT EXISTS consciousness_entries (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id uuid REFERENCES auth.users(id) NOT NULL,
+  raw_text text NOT NULL,
+  gemini_analysis text NOT NULL,
+  created_at timestamptz DEFAULT now() NOT NULL
+);
+
+ALTER TABLE consciousness_entries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can insert their own consciousness entries"
+  ON consciousness_entries FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can read their own consciousness entries"
+  ON consciousness_entries FOR SELECT
+  USING (auth.uid() = user_id);

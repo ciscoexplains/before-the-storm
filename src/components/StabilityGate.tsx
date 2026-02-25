@@ -9,6 +9,7 @@ type StabilityGateProps = {
     onComplete: (isStable: boolean, score: number) => void
     onSail?: () => void
     onConstellation?: () => void
+    onStream?: () => void
 }
 
 const fadeVariant = {
@@ -17,7 +18,7 @@ const fadeVariant = {
     exit: { opacity: 0, y: -12, transition: { duration: 0.4 } },
 }
 
-export default function StabilityGate({ onComplete, onSail, onConstellation }: StabilityGateProps) {
+export default function StabilityGate({ onComplete, onSail, onConstellation, onStream }: StabilityGateProps) {
     const [step, setStep] = useState<'intro' | 'question1' | 'question2' | 'scale' | 'checking'>('intro')
     const [rating, setRating] = useState(5)
     const [failCount, setFailCount] = useState(0)
@@ -68,6 +69,11 @@ export default function StabilityGate({ onComplete, onSail, onConstellation }: S
                             {onSail && (
                                 <button onClick={onSail} className={styles.sailBtn}>
                                     🌊 I Want to Sail
+                                </button>
+                            )}
+                            {onStream && (
+                                <button onClick={onStream} className={styles.releaseBtn}>
+                                    ∿ release into the void
                                 </button>
                             )}
                             {onConstellation && (
