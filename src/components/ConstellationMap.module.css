@@ -15,13 +15,27 @@
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(ellipse 70% 50% at 30% 20%, rgba(20, 30, 80, 0.6) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 75% 60%, rgba(30, 10, 60, 0.4) 0%, transparent 70%),
-        linear-gradient(175deg, #020514 0%, #06091e 30%, #0a1232 65%, #0d183a 85%, #080e28 100%);
+        radial-gradient(ellipse 70% 50% at 30% 20%, rgba(15, 20, 60, 0.4) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 75% 60%, rgba(20, 10, 50, 0.3) 0%, transparent 70%),
+        linear-gradient(175deg, #020410 0%, #04081a 30%, #060b22 65%, #080f28 85%, #040816 100%);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     z-index: 100;
+}
+
+/* ── Background stars for depth ── */
+.bgStars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.bgStar {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
 }
 
 /* ── Ambient nebula clouds ── */
@@ -29,22 +43,24 @@
     position: absolute;
     top: 5%;
     left: 10%;
-    width: 45%;
-    height: 35%;
-    background: radial-gradient(ellipse, rgba(80, 60, 160, 0.06) 0%, transparent 70%);
+    width: 60%;
+    height: 50%;
+    background: radial-gradient(ellipse, rgba(70, 50, 150, 0.04) 0%, transparent 70%);
     pointer-events: none;
-    animation: nebulaDrift1 20s ease-in-out infinite;
+    animation: nebulaDrift1 35s ease-in-out infinite;
+    filter: blur(40px);
 }
 
 .nebula2 {
     position: absolute;
-    top: 30%;
+    bottom: 10%;
     right: 5%;
-    width: 40%;
-    height: 40%;
-    background: radial-gradient(ellipse, rgba(40, 80, 140, 0.05) 0%, transparent 70%);
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(ellipse, rgba(30, 60, 120, 0.03) 0%, transparent 70%);
     pointer-events: none;
-    animation: nebulaDrift2 28s ease-in-out infinite;
+    animation: nebulaDrift2 45s ease-in-out infinite;
+    filter: blur(40px);
 }
 
 .horizon {
@@ -115,43 +131,60 @@
 /* ── Header ── */
 .header {
     text-align: center;
-    padding: 2.5rem 1.5rem 0.5rem;
+    padding: 3.5rem 1.5rem 1rem;
     position: relative;
     z-index: 5;
 }
 
 .title {
     font-family: 'Fraunces', Georgia, serif;
-    font-size: clamp(1.4rem, 4vw, 2.1rem);
-    font-weight: 300;
-    color: rgba(230, 220, 255, 0.88);
-    letter-spacing: 0.12em;
-    margin: 0 0 0.5rem;
-    text-shadow: 0 0 40px rgba(180, 150, 255, 0.3);
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    font-weight: 200;
+    color: rgba(230, 225, 255, 0.95);
+    letter-spacing: 0.2em;
+    margin: 0 0 0.75rem;
+    text-shadow: 0 0 50px rgba(180, 150, 255, 0.4);
+    text-transform: lowercase;
 }
 
 .subtitle {
-    font-size: 0.82rem;
-    color: rgba(190, 180, 230, 0.4);
+    font-size: 0.85rem;
+    color: rgba(190, 180, 230, 0.5);
     font-style: italic;
     font-family: Georgia, serif;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     margin: 0;
+    font-weight: 300;
 }
 
 /* ── Map container ── */
 .mapWrap {
     flex: 1;
     position: relative;
-    margin: 0.5rem 0;
+    margin: 1rem 0;
     min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .starMap {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    inset: 0;
+    width: 90%;
+    height: 85%;
+    max-width: 1200px;
+    z-index: 2;
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+    animation: drift 60s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+    0% {
+        transform: translate(-0.5%, -0.5%) scale(1.01);
+    }
+
+    100% {
+        transform: translate(0.5%, 0.5%) scale(1.02);
+    }
 }
 
 /* ── Loading ── */
@@ -223,66 +256,75 @@
 .tooltip {
     position: absolute;
     transform: translate(-50%, -120%);
-    background: rgba(10, 12, 38, 0.92);
-    border: 1px solid rgba(190, 175, 255, 0.18);
-    border-radius: 10px;
-    padding: 0.55rem 0.85rem;
+    background: rgba(10, 12, 38, 0.85);
+    border: 1px solid rgba(190, 175, 255, 0.12);
+    border-radius: 12px;
+    padding: 0.7rem 1.1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.22rem;
+    gap: 0.35rem;
     pointer-events: none;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
     white-space: nowrap;
     z-index: 50;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+.tooltipHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.1rem;
 }
 
 .tooltipDot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     display: inline-block;
 }
 
 .tooltipType {
-    font-size: 0.7rem;
-    color: rgba(210, 200, 255, 0.7);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    font-family: inherit;
+    font-size: 0.72rem;
+    color: rgba(210, 200, 255, 0.6);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
 }
 
 .tooltipRating {
     font-family: 'Fraunces', Georgia, serif;
-    font-size: 0.9rem;
-    color: rgba(230, 220, 255, 0.85);
+    font-size: 1.1rem;
+    color: rgba(235, 230, 255, 1);
+    font-weight: 200;
 }
 
 .tooltipDate {
-    font-size: 0.62rem;
-    color: rgba(190, 180, 230, 0.38);
+    font-size: 0.65rem;
+    color: rgba(190, 180, 230, 0.35);
     font-style: italic;
     font-family: Georgia, serif;
+    letter-spacing: 0.02em;
 }
 
 /* ── Legend ── */
 .legend {
     position: relative;
     z-index: 10;
-    background: rgba(8, 10, 30, 0.7);
-    border-top: 1px solid rgba(190, 175, 255, 0.07);
-    backdrop-filter: blur(16px);
-    padding: 0.85rem 1.5rem;
+    background: linear-gradient(to top, rgba(5, 7, 20, 0.95), rgba(5, 7, 20, 0.6));
+    border-top: 1px solid rgba(190, 175, 255, 0.05);
+    backdrop-filter: blur(24px);
+    padding: 1.2rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.8rem;
 }
 
 .legendItems {
     display: flex;
-    gap: 1.6rem;
+    gap: 2.5rem;
     flex-wrap: wrap;
     justify-content: center;
 }
@@ -290,14 +332,14 @@
 .legendItem {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.6rem;
 }
 
 .legendDot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    box-shadow: 0 0 8px currentColor;
+    box-shadow: 0 0 10px currentColor;
     display: inline-block;
     flex-shrink: 0;
 }

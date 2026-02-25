@@ -120,8 +120,41 @@ function buildCentroids(stars: PositionedStar[]): Centroid[] {
         monthKey,
         label: getMonthLabel(monthKey),
         x: group.reduce((sum, s) => sum + s.x, 0) / group.length,
-        y: Math.min(...group.map(s => s.y)) - 3.5,
+        y: Math.min(...group.map(s => s.y)) - 5, // Increased spacing
     }))
+}
+
+function BackgroundStars() {
+    const [stars, setStars] = useState<{ id: number; x: number; y: number; s: number; o: number }[]>([])
+
+    useEffect(() => {
+        const newStars = Array.from({ length: 120 }).map((_, i) => ({
+            id: i,
+            x: Math.random() * 100,
+            y: Math.random() * 100,
+            s: 0.5 + Math.random() * 1.5,
+            o: 0.1 + Math.random() * 0.4,
+        }))
+        setStars(newStars)
+    }, [])
+
+    return (
+        <div className={styles.bgStars}>
+            {stars.map(s => (
+                <div
+                    key={s.id}
+                    className={styles.bgStar}
+                    style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.s}px`,
+                        height: `${s.s}px`,
+                        opacity: s.o,
+                    }}
+                />
+            ))}
+        </div>
+    )
 }
 
 function EmptySky() {
@@ -134,12 +167,12 @@ function EmptySky() {
         >
             <motion.div
                 className={styles.emptyStar}
-                animate={{ opacity: [0.3, 0.9, 0.3], scale: [1, 1.15, 1] }}
-                transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+                animate={{ opacity: [0.2, 0.6, 0.2], scale: [1, 1.1, 1] }}
+                transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
             >
                 ✦
             </motion.div>
-            <p className={styles.emptyTitle}>Your sky is still forming.</p>
+            <p className={styles.emptyTitle}>your sky is still forming.</p>
             <p className={styles.emptyText}>
                 Every storm you name, every breath you take in the grounding exercise,
                 every bottle you send to sea — will be a star up here.
@@ -177,8 +210,9 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.8, ease: 'easeOut' }}
+            transition={{ duration: 2, ease: 'easeOut' }}
         >
+            <BackgroundStars />
             {/* Ambient background layers */}
             <div className={styles.nebula1} />
             <div className={styles.nebula2} />
@@ -192,11 +226,11 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
             {/* Header */}
             <motion.div
                 className={styles.header}
-                initial={{ opacity: 0, y: -16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 1 }}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 1.4, ease: 'easeOut' }}
             >
-                <h1 className={styles.title}>✦ Your Constellations</h1>
+                <h1 className={styles.title}>✦ your constellations</h1>
                 <p className={styles.subtitle}>
                     Every star is a moment you carried yourself through.
                 </p>
@@ -208,10 +242,10 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                     <div className={styles.loading}>
                         <motion.div
                             className={styles.loadingOrb}
-                            animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
-                            transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+                            animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.6, 0.3] }}
+                            transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
                         />
-                        <p className={styles.loadingText}>Reading the stars…</p>
+                        <p className={styles.loadingText}>reading the stars…</p>
                     </div>
                 ) : stars.length === 0 ? (
                     <EmptySky />
@@ -219,36 +253,40 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                     <svg
                         className={styles.starMap}
                         viewBox="0 0 100 80"
-                        preserveAspectRatio="none"
+                        preserveAspectRatio="xMidYMid meet"
                     >
                         <defs>
-                            {/* Storm star glow */}
-                            <filter id="glow-storm" x="-100%" y="-100%" width="300%" height="300%">
-                                <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
+                            {/* Layered glows for more organic light */}
+                            <filter id="glow-storm" x="-150%" y="-150%" width="400%" height="400%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur1" />
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur2" />
                                 <feMerge>
-                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="blur2" />
+                                    <feMergeNode in="blur1" />
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
-                            {/* Grounding star glow */}
-                            <filter id="glow-grounding" x="-100%" y="-100%" width="300%" height="300%">
-                                <feGaussianBlur in="SourceGraphic" stdDeviation="1.4" result="blur" />
+                            <filter id="glow-grounding" x="-150%" y="-150%" width="400%" height="400%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="1.0" result="blur1" />
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="3.0" result="blur2" />
                                 <feMerge>
-                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="blur2" />
+                                    <feMergeNode in="blur1" />
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
-                            {/* Bottle star glow */}
-                            <filter id="glow-bottle" x="-100%" y="-100%" width="300%" height="300%">
-                                <feGaussianBlur in="SourceGraphic" stdDeviation="1.0" result="blur" />
+                            <filter id="glow-bottle" x="-150%" y="-150%" width="400%" height="400%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="blur1" />
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="2.0" result="blur2" />
                                 <feMerge>
-                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="blur2" />
+                                    <feMergeNode in="blur1" />
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
                             {/* Line glow */}
-                            <filter id="line-glow" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur in="SourceGraphic" stdDeviation="0.4" />
+                            <filter id="line-glow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="0.3" />
                             </filter>
                         </defs>
 
@@ -258,13 +296,13 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                                 key={`line-${i}`}
                                 x1={line.x1} y1={line.y1}
                                 x2={line.x2} y2={line.y2}
-                                stroke="rgba(190, 170, 255, 0.2)"
-                                strokeWidth="0.35"
-                                strokeDasharray="1.2 1.0"
+                                stroke="rgba(200, 190, 255, 0.15)"
+                                strokeWidth="0.25"
+                                strokeDasharray="1 1.5"
                                 filter="url(#line-glow)"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ delay: 1.0 + i * 0.12, duration: 1.4 }}
+                                transition={{ delay: 1.2 + i * 0.1, duration: 2 }}
                             />
                         ))}
 
@@ -275,13 +313,13 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                                 x={c.x}
                                 y={c.y}
                                 textAnchor="middle"
-                                fontSize="2.1"
-                                fill="rgba(210, 195, 255, 0.28)"
-                                fontFamily="Georgia, 'Times New Roman', serif"
+                                fontSize="1.8"
+                                fill="rgba(215, 210, 255, 0.22)"
+                                fontFamily="Georgia, serif"
                                 fontStyle="italic"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ delay: 1.8 + i * 0.15, duration: 1 }}
+                                transition={{ delay: 2 + i * 0.2, duration: 1.5 }}
                             >
                                 {c.label}
                             </motion.text>
@@ -293,19 +331,19 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                                 key={star.id}
                                 cx={star.x}
                                 cy={star.y}
-                                r={star.radius}
+                                r={star.radius * 0.8}
                                 fill={star.color}
                                 filter={`url(#glow-${star.type})`}
                                 style={{ cursor: 'pointer' }}
                                 initial={{ opacity: 0, scale: 0 }}
                                 animate={{
-                                    opacity: [0, 1, 0.75, 1],
+                                    opacity: [0, 1, 0.7, 1],
                                     scale: 1,
                                 }}
                                 transition={{
-                                    delay: 0.4 + i * 0.07,
-                                    duration: 0.9,
-                                    opacity: { duration: 2.5, repeat: Infinity, repeatType: 'reverse', delay: star.twinkleDelay + 1 }
+                                    delay: 0.5 + i * 0.05,
+                                    duration: 1.2,
+                                    opacity: { duration: 4, repeat: Infinity, repeatType: 'reverse', delay: star.twinkleDelay + 2 }
                                 }}
                                 onMouseEnter={() => setHoveredStar(star)}
                                 onMouseLeave={() => setHoveredStar(null)}
@@ -323,24 +361,26 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
                                 left: `${hoveredStar.x}%`,
                                 top: `${hoveredStar.y}%`,
                             }}
-                            initial={{ opacity: 0, y: 6, scale: 0.9 }}
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 6, scale: 0.9 }}
-                            transition={{ duration: 0.2 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
                         >
-                            <span
-                                className={styles.tooltipDot}
-                                style={{ background: hoveredStar.color }}
-                            />
-                            <span className={styles.tooltipType}>
-                                {TYPE_LABELS[hoveredStar.type as StarType]}
-                            </span>
+                            <div className={styles.tooltipHeader}>
+                                <span
+                                    className={styles.tooltipDot}
+                                    style={{ background: hoveredStar.color, boxShadow: `0 0 10px ${hoveredStar.color}` }}
+                                />
+                                <span className={styles.tooltipType}>
+                                    {TYPE_LABELS[hoveredStar.type as StarType]}
+                                </span>
+                            </div>
                             <span className={styles.tooltipRating}>
                                 {hoveredStar.rating}/10
                             </span>
                             <span className={styles.tooltipDate}>
                                 {new Date(hoveredStar.date).toLocaleDateString('en-US', {
-                                    month: 'short', day: 'numeric', year: 'numeric'
+                                    month: 'long', day: 'numeric'
                                 })}
                             </span>
                         </motion.div>
@@ -352,23 +392,23 @@ export default function ConstellationMap({ onBack }: { onBack: () => void }) {
             {!loading && stars.length > 0 && (
                 <motion.div
                     className={styles.legend}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 2.2, duration: 0.9 }}
+                    transition={{ delay: 2.5, duration: 1.2, ease: 'easeOut' }}
                 >
                     <div className={styles.legendItems}>
                         {(['storm', 'grounding', 'bottle'] as StarType[]).map(type => (
                             <div key={type} className={styles.legendItem}>
                                 <span
                                     className={styles.legendDot}
-                                    style={{ background: TYPE_COLORS[type] }}
+                                    style={{ background: TYPE_COLORS[type], color: TYPE_COLORS[type] }}
                                 />
-                                <span className={styles.legendLabel}>{TYPE_LABELS[type]}</span>
+                                <span className={styles.legendLabel}>{TYPE_LABELS[type].toLowerCase()}</span>
                             </div>
                         ))}
                     </div>
                     <p className={styles.legendStat}>
-                        {stars.length} star{stars.length !== 1 ? 's' : ''}
+                        {stars.length} star{stars.length !== 1 ? 's' : ''} in the sky
                         {totalConstellations > 0 && ` · ${totalConstellations} constellation${totalConstellations !== 1 ? 's' : ''}`}
                     </p>
                 </motion.div>
