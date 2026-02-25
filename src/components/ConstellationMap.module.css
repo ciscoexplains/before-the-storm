@@ -255,20 +255,20 @@
 /* ── Tooltip ── */
 .tooltip {
     position: absolute;
-    transform: translate(-50%, -120%);
-    background: rgba(10, 12, 38, 0.85);
-    border: 1px solid rgba(190, 175, 255, 0.12);
+    transform: translate(-50%, calc(-100% - 20px));
+    background: rgba(10, 12, 38, 0.9);
+    border: 1px solid rgba(190, 175, 255, 0.2);
     border-radius: 12px;
-    padding: 0.7rem 1.1rem;
+    padding: 0.8rem 1.2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.35rem;
-    pointer-events: none;
-    backdrop-filter: blur(20px);
+    pointer-events: auto;
+    backdrop-filter: blur(24px);
     white-space: nowrap;
-    z-index: 50;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
 }
 
 .tooltipHeader {
