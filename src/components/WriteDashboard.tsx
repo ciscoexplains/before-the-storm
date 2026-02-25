@@ -8,6 +8,27 @@ import { logout } from '@/app/login/actions'
 import EmotionalTimeline from './EmotionalTimeline'
 import styles from './WriteDashboard.module.css'
 
+const funFacts = [
+    '🐶 Anjing bisa memahami sekitar 250 kata dan gestur — setara dengan anak usia 2 tahun.',
+    '🐴 Kuda bisa tidur sambil berdiri berkat mekanisme "stay apparatus" di kakinya.',
+    '🐶 Hidung anjing memiliki sidik jari unik — tidak ada dua anjing dengan pola hidung yang sama.',
+    '🐴 Kuda memiliki pandangan hampir 360 derajat karena posisi matanya di samping kepala.',
+    '🐶 Anjing Basenji adalah satu-satunya ras anjing yang tidak menggonggong, tapi mengeluarkan suara yodeling.',
+    '🐴 Kuda tidak bisa muntah — sistem pencernaannya hanya bekerja satu arah.',
+    '🐶 Anjing Dalmatian lahir tanpa bintik — bintiknya muncul seiring pertumbuhan.',
+    '🐴 Gigi kuda terus tumbuh sepanjang hidupnya dan bisa digunakan untuk memperkirakan usianya.',
+    '🐶 Anjing Greyhound bisa berlari hingga 72 km/jam — lebih cepat dari kebanyakan kuda.',
+    '🐴 Kuda bisa berlari hanya beberapa jam setelah dilahirkan.',
+    '🐶 Indra penciuman anjing 10.000–100.000 kali lebih tajam dari manusia.',
+    '🐴 Kuda berkomunikasi melalui ekspresi wajah — mereka punya 17 ekspresi berbeda.',
+    '🐶 Anjing bermimpi saat tidur — sama seperti manusia, mereka mengalami fase REM.',
+    '🐴 Kuda Arab memiliki satu tulang rusuk lebih sedikit, satu tulang punggung lebih sedikit, dan satu tulang ekor lebih sedikit dibanding ras lain.',
+    '🐶 Anjing bisa merasakan emosi manusia melalui bau tubuh — mereka bisa "mencium" ketakutan dan kebahagiaan.',
+    '🐴 Mata kuda adalah salah satu yang terbesar di antara semua mamalia darat.',
+    '🐶 Ekor anjing yang bergoyang ke kanan menunjukkan kebahagiaan, ke kiri menunjukkan kecemasan.',
+    '🐴 Kuda bisa tidur hanya 2–3 jam dalam sehari dan tetap sehat.',
+]
+
 type Capsule = {
     id: string
     title: string
@@ -25,6 +46,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
     const [moodRating, setMoodRating] = useState(5)
     const [submitting, setSubmitting] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [funFact, setFunFact] = useState('')
     const [capsules, setCapsules] = useState<Capsule[]>([])
     const [showTimeline, setShowTimeline] = useState(false)
     const [view, setView] = useState<'write' | 'capsules'>('write')
@@ -54,6 +76,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                 stable_mood_rating: moodRating,
             })
 
+            setFunFact(funFacts[Math.floor(Math.random() * funFacts.length)])
             setSuccess(true)
             setTitle('')
             setMessage('')
@@ -61,6 +84,7 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
             setMoodRating(5)
             await fetchCapsules()
             setTimeout(() => setSuccess(false), 4000)
+            setTimeout(() => setFunFact(''), 6000)
         } catch {
             // Show error subtly
         } finally {
@@ -260,6 +284,38 @@ export default function WriteDashboard({ user, onBackToGate }: { user: any; onBa
                     animate={{ opacity: 1, y: 0 }}
                 >
                     <EmotionalTimeline user={user} />
+                </motion.div>
+            )}
+            {/* Fun Fact Popup */}
+            {funFact && (
+                <motion.div
+                    className={styles.popupOverlay}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setFunFact('')}
+                >
+                    <motion.div
+                        className={styles.popupCard}
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <p className={styles.popupEmoji}>
+                            {funFact.startsWith('🐶') ? '🐶' : '🐴'}
+                        </p>
+                        <p className={styles.popupLabel}>Tahukah kamu?</p>
+                        <p className={styles.popupFact}>
+                            {funFact.slice(2).trim()}
+                        </p>
+                        <button
+                            className={styles.popupClose}
+                            onClick={() => setFunFact('')}
+                        >
+                            Tutup
+                        </button>
+                    </motion.div>
                 </motion.div>
             )}
         </motion.div>

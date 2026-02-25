@@ -62,3 +62,27 @@ CREATE POLICY "Julian can insert support messages"
 -- Run this if the table already exists without capsule_id
 -- ============================================
 -- ALTER TABLE support_messages ADD COLUMN IF NOT EXISTS capsule_id uuid REFERENCES emotional_capsules(id) ON DELETE CASCADE;
+
+-- ============================================
+-- Table: bottle_messages (I Want to Sail feature)
+-- Happy messages in a bottle — anyone can write,
+-- anyone can catch a random message to read.
+-- ============================================
+CREATE TABLE IF NOT EXISTS bottle_messages (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id uuid REFERENCES auth.users(id) NOT NULL,
+  message text NOT NULL,
+  created_at timestamptz DEFAULT now() NOT NULL
+);
+
+ALTER TABLE bottle_messages ENABLE ROW LEVEL SECURITY;
+
+-- Any authenticated user can insert their own bottles
+CREATE POLICY "Users can insert their own bottle messages"
+  ON bottle_messages FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+-- Any authenticated user can read all bottle messages (to catch a random bottle)
+CREATE POLICY "Anyone can read bottle messages"
+  ON bottle_messages FOR SELECT
+  USING (auth.role() = 'authenticated');

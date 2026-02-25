@@ -5,7 +5,7 @@
 
 .container {
     min-height: 100vh;
-    padding: var(--space-xl);
+    padding: var(--space-4xl) var(--space-xl) var(--space-xl);
     position: relative;
 }
 

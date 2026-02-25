@@ -117,3 +117,42 @@ export async function fetchSupportMessages(capsuleId: string) {
     if (error) throw new Error(error.message)
     return data || []
 }
+
+// ─── I Want to Sail Actions ───
+
+export async function saveBottleMessage(message: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) throw new Error('Not authenticated')
+
+    const { error } = await supabase.from('bottle_messages').insert({
+        user_id: user.id,
+        message,
+    })
+
+    if (error) throw new Error(error.message)
+    return { success: true }
+}
+
+export async function catchRandomBottle() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) throw new Error('Not authenticated')
+
+    // Fetch all messages, try to exclude own first
+    const { data: all } = await supabase
+        .from('bottle_messages')
+        .select('id, message, created_at')
+        .order('created_at', { ascending: false })
+
+    if (!all || all.length === 0) return null
+
+    // Prefer messages from others; fall back to any
+    const others = all.filter((m: any) => m.user_id !== user.id)
+    const pool = others.length > 0 ? others : all
+    const picked = pool[Math.floor(Math.random() * pool.length)]
+    return picked
+}
+

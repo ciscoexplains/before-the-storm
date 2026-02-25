@@ -1,0 +1,785 @@
+/* =============================================
+   SailMode — Quiet Shore at Sunset
+   Palette:
+     Sky:    #1a0e3a → #7b2d1e → #e8703a → #f5b97c → #fde8b8
+     Ocean:  #0a2e42 → #0d4a68 → #1a6b8a
+     Glow:   #f7c97e (warm gold-amber)
+     Text:   #fdf4e7 / rgba(253,230,190,0.7) / rgba(253,230,190,0.4)
+   Fonts:   Fraunces (serif) + Inter (sans)
+   ============================================= */
+
+/* ── Vignette overlay ── */
+.sailContainer::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 120% 80% at 50% 0%, transparent 30%, rgba(10, 6, 28, 0.45) 100%),
+        radial-gradient(ellipse 100% 60% at 50% 100%, rgba(5, 18, 30, 0.5) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* ── Full-screen Scene ── */
+.sailContainer {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* ── Sky — layered warm gradient ── */
+.sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(175deg,
+            #120b2e 0%,
+            #1f1040 8%,
+            #5c2012 22%,
+            #b84a18 36%,
+            #e8703a 48%,
+            #f5a55c 58%,
+            #f9cfa0 67%,
+            #c8dff0 78%,
+            #8ec8e8 88%,
+            #5eaacf 100%);
+    z-index: 0;
+}
+
+/* Stars in upper sky */
+.sky::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 60% 0;
+    background-image:
+        radial-gradient(1.5px 1.5px at 10% 8%, rgba(255, 245, 220, 0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 23% 14%, rgba(255, 245, 220, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 37% 6%, rgba(255, 245, 220, 0.6) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 52% 12%, rgba(255, 245, 220, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 68% 5%, rgba(255, 245, 220, 0.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 81% 9%, rgba(255, 245, 220, 0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 94% 15%, rgba(255, 245, 220, 0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 20%, rgba(255, 245, 220, 0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 43% 18%, rgba(255, 245, 220, 0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 75% 17%, rgba(255, 245, 220, 0.35) 0%, transparent 100%);
+    pointer-events: none;
+    animation: starsTwinkle 6s ease-in-out infinite alternate;
+}
+
+@keyframes starsTwinkle {
+    0% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* ── Sun ── */
+.sun {
+    position: absolute;
+    top: 56%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            #fffbe0 0%,
+            #fde27a 30%,
+            #f9a040 65%,
+            transparent 100%);
+    box-shadow:
+        0 0 0 12px rgba(249, 180, 80, 0.08),
+        0 0 40px 20px rgba(248, 160, 60, 0.3),
+        0 0 100px 50px rgba(240, 130, 40, 0.15),
+        0 0 200px 100px rgba(230, 100, 30, 0.07);
+    z-index: 1;
+    animation: sunBreath 5s ease-in-out infinite;
+}
+
+@keyframes sunBreath {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 12px rgba(249, 180, 80, 0.08),
+            0 0 40px 20px rgba(248, 160, 60, 0.28),
+            0 0 100px 50px rgba(240, 130, 40, 0.13);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 16px rgba(249, 180, 80, 0.1),
+            0 0 60px 30px rgba(248, 160, 60, 0.35),
+            0 0 130px 65px rgba(240, 130, 40, 0.18);
+    }
+}
+
+/* ── Sun glow on water ── */
+.sunGlow {
+    position: absolute;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 70%;
+    height: 180px;
+    background: radial-gradient(ellipse 70% 100% at 50% 0%,
+            rgba(248, 180, 80, 0.22) 0%,
+            rgba(240, 140, 50, 0.1) 50%,
+            transparent 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ── Horizon ── */
+.horizon {
+    position: absolute;
+    top: 59.5%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 230, 150, 0.4) 30%,
+            rgba(255, 210, 100, 0.7) 50%,
+            rgba(255, 230, 150, 0.4) 70%,
+            transparent 100%);
+    z-index: 2;
+    pointer-events: none;
+    filter: blur(0.5px);
+}
+
+/* ── Ocean ── */
+.ocean {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 41%;
+    background: linear-gradient(180deg,
+            #1a6b8a 0%,
+            #0d4a68 20%,
+            #0a3050 50%,
+            #071e34 100%);
+    z-index: 2;
+    overflow: hidden;
+}
+
+/* Sunlight reflection on ocean surface */
+.ocean::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 80px;
+    background: linear-gradient(180deg,
+            rgba(248, 200, 90, 0.18) 0%,
+            rgba(248, 200, 90, 0.04) 60%,
+            transparent 100%);
+    filter: blur(1px);
+    pointer-events: none;
+}
+
+/* ── Waves ── */
+.wave1,
+.wave2,
+.wave3 {
+    position: absolute;
+    left: -100%;
+    width: 300%;
+    border-radius: 50% 50% 0 0;
+    animation: waveGlide linear infinite;
+}
+
+.wave1 {
+    top: -20px;
+    height: 28px;
+    background: linear-gradient(180deg, rgba(26, 107, 138, 0.95) 0%, rgba(13, 74, 104, 0.0) 100%);
+    animation-duration: 10s;
+    opacity: 0.9;
+}
+
+.wave2 {
+    top: -13px;
+    height: 20px;
+    background: linear-gradient(180deg, rgba(40, 130, 160, 0.7) 0%, transparent 100%);
+    animation-duration: 14s;
+    animation-delay: -4s;
+    opacity: 0.65;
+}
+
+.wave3 {
+    top: -7px;
+    height: 14px;
+    background: linear-gradient(180deg, rgba(60, 150, 180, 0.45) 0%, transparent 100%);
+    animation-duration: 18s;
+    animation-delay: -9s;
+    opacity: 0.45;
+}
+
+@keyframes waveGlide {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(33.33%);
+    }
+}
+
+/* ── Back Button ── */
+.backBtn {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.5rem;
+    z-index: 20;
+    background: rgba(10, 20, 40, 0.3);
+    border: 1px solid rgba(255, 230, 180, 0.15);
+    color: rgba(253, 230, 190, 0.6);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.35s ease;
+    font-family: var(--font-sans);
+    letter-spacing: 0.04em;
+}
+
+.backBtn:hover {
+    background: rgba(10, 20, 40, 0.5);
+    border-color: rgba(255, 220, 160, 0.3);
+    color: rgba(253, 235, 200, 0.9);
+}
+
+/* ── Central Floating Card ── */
+.card {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    /* Soft multi-layer glass effect */
+    background:
+        linear-gradient(160deg,
+            rgba(30, 16, 55, 0.62) 0%,
+            rgba(18, 10, 38, 0.72) 100%);
+    backdrop-filter: blur(28px) saturate(140%);
+    -webkit-backdrop-filter: blur(28px) saturate(140%);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 220, 160, 0.12);
+    padding: 2.2rem 2rem 1.8rem;
+    /* Glow — like moonlight reflecting off glass */
+    box-shadow:
+        0 0 0 1px rgba(255, 210, 130, 0.06),
+        0 8px 32px rgba(0, 0, 0, 0.45),
+        0 32px 80px rgba(0, 0, 0, 0.35),
+        0 0 80px rgba(250, 180, 80, 0.06),
+        inset 0 1px 0 rgba(255, 240, 200, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    max-height: 80vh;
+    overflow-y: auto;
+    /* Subtle floating animation */
+    animation: cardFloat 6s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* ── Card Header ── */
+.cardHeader {
+    text-align: center;
+    margin-bottom: 1.6rem;
+}
+
+.title {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: #fde8b8;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 0.55rem;
+    text-shadow:
+        0 0 40px rgba(248, 200, 100, 0.35),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+    color: rgba(248, 220, 175, 0.55);
+    font-size: 0.84rem;
+    font-style: italic;
+    line-height: 1.65;
+    font-family: var(--font-serif);
+    letter-spacing: 0.01em;
+}
+
+/* ── Divider ── */
+.divider {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 210, 130, 0.3), transparent);
+    margin: 0 auto 1.6rem;
+}
+
+/* ── Tabs ── */
+.tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.6rem;
+    background: rgba(5, 12, 28, 0.4);
+    border-radius: 14px;
+    padding: 0.3rem;
+    border: 1px solid rgba(255, 215, 140, 0.07);
+}
+
+.tab {
+    flex: 1;
+    padding: 0.55rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: rgba(248, 220, 175, 0.38);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all 0.3s ease;
+    font-family: var(--font-sans);
+}
+
+.tab:hover {
+    color: rgba(248, 220, 175, 0.65);
+    background: rgba(255, 215, 140, 0.05);
+}
+
+.tabActive {
+    background: rgba(240, 175, 80, 0.1) !important;
+    color: rgba(253, 222, 155, 0.92) !important;
+    box-shadow: inset 0 0 0 1px rgba(240, 175, 80, 0.18);
+}
+
+/* ── Shared Tab Content ── */
+.tabContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.hint {
+    color: rgba(248, 215, 160, 0.5);
+    font-size: 0.84rem;
+    text-align: center;
+    font-style: italic;
+    font-family: var(--font-serif);
+    letter-spacing: 0.01em;
+    line-height: 1.6;
+}
+
+/* ── Write Form ── */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.textarea {
+    width: 100%;
+    padding: 1rem 1.1rem;
+    background: rgba(8, 16, 35, 0.45);
+    border: 1px solid rgba(255, 210, 140, 0.1);
+    border-radius: 16px;
+    color: rgba(253, 240, 210, 0.88);
+    font-size: 0.93rem;
+    resize: none;
+    min-height: 130px;
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+    font-family: var(--font-serif);
+    line-height: 1.75;
+    outline: none;
+    letter-spacing: 0.01em;
+}
+
+.textarea:focus {
+    border-color: rgba(240, 180, 90, 0.28);
+    box-shadow:
+        0 0 0 4px rgba(240, 180, 90, 0.05),
+        0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.textarea::placeholder {
+    color: rgba(248, 210, 150, 0.22);
+    font-style: italic;
+    font-size: 0.88rem;
+}
+
+/* ── Submit Button ── */
+.submitBtn {
+    padding: 0.85rem 1.5rem;
+    background: linear-gradient(135deg,
+            rgba(220, 150, 60, 0.85) 0%,
+            rgba(240, 185, 80, 0.9) 100%);
+    border: none;
+    border-radius: 14px;
+    color: #1a0e2e;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 20px rgba(220, 150, 60, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    font-family: var(--font-sans);
+}
+
+.submitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(220, 150, 60, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, rgba(230, 160, 70, 0.95) 0%, rgba(248, 198, 90, 1) 100%);
+}
+
+.submitBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(220, 150, 60, 0.2);
+}
+
+.error {
+    color: rgba(255, 160, 100, 0.8);
+    font-size: 0.8rem;
+    text-align: center;
+    font-style: italic;
+}
+
+/* ── Animation Stage ── */
+.animationStage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    gap: 1.25rem;
+}
+
+/* Parchment letter */
+.letter {
+    width: 90px;
+    height: 72px;
+    background: linear-gradient(145deg, #fdf6de, #f5e8c0);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.letterInner {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 10px 12px;
+    width: 100%;
+}
+
+.letterLine {
+    height: 1.5px;
+    width: 80%;
+    background: rgba(80, 55, 25, 0.25);
+    border-radius: 2px;
+}
+
+.bottleWrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.bottleSvgWrap {
+    filter: drop-shadow(0 6px 18px rgba(0, 80, 120, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.animLabel {
+    color: rgba(248, 215, 155, 0.6);
+    font-size: 0.83rem;
+    text-align: center;
+    font-style: italic;
+    font-family: var(--font-serif);
+    letter-spacing: 0.03em;
+}
+
+/* ── Success State ── */
+.successArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem 0 0.5rem;
+}
+
+.successEmoji {
+    font-size: 2.2rem;
+    display: block;
+}
+
+.successTitle {
+    font-family: var(--font-serif);
+    color: #fde8b8;
+    font-size: 1.25rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.successText {
+    color: rgba(248, 215, 160, 0.5);
+    font-size: 0.84rem;
+    font-family: var(--font-serif);
+    line-height: 1.75;
+    max-width: 340px;
+    font-style: italic;
+}
+
+.resetBtn {
+    margin-top: 0.5rem;
+    padding: 0.55rem 1.5rem;
+    background: transparent;
+    border: 1px solid rgba(240, 180, 80, 0.2);
+    border-radius: 50px;
+    color: rgba(248, 210, 140, 0.6);
+    cursor: pointer;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    transition: all 0.3s ease;
+    font-family: var(--font-sans);
+}
+
+.resetBtn:hover {
+    border-color: rgba(240, 180, 80, 0.4);
+    color: rgba(248, 220, 160, 0.9);
+    background: rgba(240, 180, 80, 0.06);
+}
+
+/* ── Catch Area ── */
+.catchArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.3rem;
+}
+
+/* Ocean mini-scene inside card */
+.oceanMini {
+    width: 100%;
+    height: 148px;
+    background: linear-gradient(180deg,
+            #1a6b8a 0%,
+            #0a3050 60%,
+            #071e34 100%);
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid rgba(80, 180, 220, 0.08);
+    box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Subtle sunlight on mini-ocean */
+.oceanMini::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    height: 40px;
+    background: linear-gradient(180deg, rgba(248, 200, 90, 0.12) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* Wave shimmer lines */
+.oceanMini::after {
+    content: '';
+    position: absolute;
+    top: 60%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 10%, rgba(255, 220, 120, 0.15) 50%, transparent 90%);
+    pointer-events: none;
+}
+
+.floatingBottle {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4));
+}
+
+.catchBtn {
+    padding: 0.8rem 2.2rem;
+    background: linear-gradient(135deg, rgba(15, 90, 130, 0.75), rgba(30, 130, 170, 0.8));
+    border: 1px solid rgba(80, 180, 220, 0.2);
+    border-radius: 50px;
+    color: rgba(200, 240, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.86rem;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    letter-spacing: 0.04em;
+    font-family: var(--font-sans);
+    box-shadow: 0 4px 20px rgba(15, 80, 120, 0.25);
+}
+
+.catchBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(18, 100, 145, 0.85), rgba(35, 145, 185, 0.9));
+    box-shadow: 0 8px 28px rgba(20, 100, 150, 0.35);
+    border-color: rgba(100, 200, 240, 0.3);
+}
+
+.catchBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Opening animation ── */
+.openingArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-height: 200px;
+}
+
+.bottlePop {
+    transform-origin: center bottom;
+    filter: drop-shadow(0 6px 18px rgba(0, 80, 120, 0.5));
+}
+
+.openingLabel {
+    color: rgba(248, 215, 155, 0.55);
+    font-size: 0.84rem;
+    font-style: italic;
+    font-family: var(--font-serif);
+    letter-spacing: 0.02em;
+}
+
+/* ── Reading state — the caught letter ── */
+.readingArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+/* Parchment-like letter card */
+.letterCard {
+    width: 100%;
+    background: linear-gradient(145deg, rgba(40, 22, 60, 0.55), rgba(25, 12, 42, 0.65));
+    border: 1px solid rgba(255, 210, 140, 0.1);
+    border-radius: 18px;
+    padding: 1.4rem 1.5rem;
+    transform-origin: top center;
+    box-shadow: inset 0 1px 0 rgba(255, 230, 170, 0.06);
+}
+
+.letterCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(255, 210, 130, 0.08);
+}
+
+.letterWax {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.letterFrom {
+    font-size: 0.73rem;
+    color: rgba(248, 205, 140, 0.4);
+    font-style: italic;
+    letter-spacing: 0.04em;
+    font-family: var(--font-serif);
+}
+
+.caughtMessage {
+    color: rgba(253, 238, 205, 0.85);
+    font-family: var(--font-serif);
+    font-size: 0.97rem;
+    line-height: 1.85;
+    white-space: pre-wrap;
+    letter-spacing: 0.01em;
+}
+
+.throwBackBtn {
+    padding: 0.55rem 1.4rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50px;
+    color: rgba(248, 220, 175, 0.35);
+    cursor: pointer;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    transition: all 0.3s ease;
+    font-family: var(--font-sans);
+}
+
+.throwBackBtn:hover {
+    border-color: rgba(255, 220, 160, 0.18);
+    color: rgba(248, 220, 175, 0.65);
+}
+
+/* ── Scrollbar (matches dark theme) ── */
+.card::-webkit-scrollbar {
+    width: 4px;
+}
+
+.card::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.card::-webkit-scrollbar-thumb {
+    background: rgba(255, 210, 130, 0.1);
+    border-radius: 2px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .card {
+        margin: 0 0.75rem;
+        padding: 1.6rem 1.2rem 1.4rem;
+        border-radius: 22px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .sun {
+        width: 60px;
+        height: 60px;
+    }
+}

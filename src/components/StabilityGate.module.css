@@ -82,6 +82,34 @@
     box-shadow: 0 8px 24px rgba(212, 165, 116, 0.3);
 }
 
+.sailBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: var(--space-md);
+    padding: 0.65rem 1.8rem;
+    background: rgba(30, 130, 170, 0.12);
+    border: 1px solid rgba(80, 180, 220, 0.3);
+    border-radius: var(--radius-full);
+    color: rgba(130, 210, 240, 0.85);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.01em;
+}
+
+.sailBtn:hover {
+    background: rgba(30, 140, 180, 0.22);
+    border-color: rgba(100, 200, 240, 0.5);
+    color: rgba(160, 230, 255, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(30, 130, 170, 0.2);
+}
+
+
+
 .choiceRow {
     display: flex;
     flex-direction: column;

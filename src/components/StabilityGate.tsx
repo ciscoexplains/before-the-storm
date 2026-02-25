@@ -7,6 +7,7 @@ import styles from './StabilityGate.module.css'
 
 type StabilityGateProps = {
     onComplete: (isStable: boolean, score: number) => void
+    onSail?: () => void
 }
 
 const fadeVariant = {
@@ -15,7 +16,7 @@ const fadeVariant = {
     exit: { opacity: 0, y: -12, transition: { duration: 0.4 } },
 }
 
-export default function StabilityGate({ onComplete }: StabilityGateProps) {
+export default function StabilityGate({ onComplete, onSail }: StabilityGateProps) {
     const [step, setStep] = useState<'intro' | 'question1' | 'question2' | 'scale' | 'checking'>('intro')
     const [rating, setRating] = useState(5)
     const [failCount, setFailCount] = useState(0)
@@ -62,6 +63,11 @@ export default function StabilityGate({ onComplete }: StabilityGateProps) {
                         <button onClick={() => setStep('question1')} className={styles.continueBtn}>
                             Begin
                         </button>
+                        {onSail && (
+                            <button onClick={onSail} className={styles.sailBtn}>
+                                🌊 I Want to Sail
+                            </button>
+                        )}
                     </motion.div>
                 )}
 
