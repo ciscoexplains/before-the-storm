@@ -272,13 +272,8 @@ STRICT RULES:
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash",
-            contents: [{
-                role: "user",
-                parts: [{
-                    text: `${systemPrompt}\n\n---\n\nHERE IS THE USER'S RAW TEXT TO ANALYZE:\n\n"${text}"`
-                }]
-            }],
+            model: "gemini-3-flash-preview",
+            contents: `${systemPrompt}\n\n---\n\nHERE IS THE USER'S RAW TEXT TO ANALYZE:\n\n"${text}"`,
             config: {
                 temperature: 0.65,
                 maxOutputTokens: 1024,
