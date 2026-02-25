@@ -39,14 +39,13 @@ export default function StreamOfConsciousness({ onBack }: { onBack: () => void }
         }
     }, [])
 
-    const commitWord = useCallback((wordStr: string) => {
-        const word = wordStr.trim()
-        if (!word) return
+    const commitWord = useCallback((word: string) => {
+        const trimmed = word.trim()
+        if (!trimmed) return
 
         const id = wordIdCounter.current++
-        fullTextRef.current.push(word)
+        fullTextRef.current.push(trimmed)
         setWordCount(prev => prev + 1)
-        setInputValue('')
 
         // Add word to visible list
         const timer = setTimeout(() => {
@@ -55,7 +54,7 @@ export default function StreamOfConsciousness({ onBack }: { onBack: () => void }
 
         setVisibleWords(prev => [
             ...prev,
-            { id, text: word, opacity: 1, timerId: timer }
+            { id, text: trimmed, opacity: 1, timerId: timer }
         ])
     }, [])
 
@@ -63,16 +62,29 @@ export default function StreamOfConsciousness({ onBack }: { onBack: () => void }
         // Still handle Enter via keydown for immediate feedback
         if (e.key === 'Enter') {
             e.preventDefault()
-            commitWord(inputValue)
+            if (inputValue.trim()) {
+                commitWord(inputValue)
+                setInputValue('')
+            }
         }
     }, [inputValue, commitWord])
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value
 
-        // If the last character is a space, commit the current word
-        if (val.endsWith(' ')) {
-            commitWord(val)
+        if (/[ \n\t]/.test(val)) {
+            const parts = val.split(/[ \n\t]+/)
+            const lastCharIsBoundary = /[ \n\t]$/.test(val)
+
+            if (lastCharIsBoundary) {
+                parts.forEach(p => commitWord(p))
+                setInputValue('')
+            } else {
+                const finished = parts.slice(0, -1)
+                const current = parts[parts.length - 1]
+                finished.forEach(p => commitWord(p))
+                setInputValue(current)
+            }
         } else {
             setInputValue(val)
         }
