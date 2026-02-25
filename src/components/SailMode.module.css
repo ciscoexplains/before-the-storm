@@ -238,7 +238,7 @@
 .backBtn {
     position: absolute;
     top: 1.25rem;
-    left: 1.5rem;
+    right: 1.5rem;
     z-index: 20;
     background: rgba(10, 20, 40, 0.3);
     border: 1px solid rgba(255, 230, 180, 0.15);
