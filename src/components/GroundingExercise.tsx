@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { saveGroundingCompletion } from '@/app/actions'
 import styles from './GroundingExercise.module.css'
 
 type GroundingExerciseProps = {
@@ -51,6 +52,15 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
             clearInterval(breathTimer)
         }
     }, [phase])
+
+    const handleComplete = async () => {
+        try {
+            await saveGroundingCompletion(moodRating)
+        } catch (error) {
+            console.error('Failed to save grounding completion:', error)
+        }
+        onComplete()
+    }
 
     return (
         <div className={styles.container}>
@@ -135,7 +145,7 @@ export default function GroundingExercise({ onComplete, moodRating }: GroundingE
                             Not to solve it, just to see it clearly.
                         </p>
 
-                        <button onClick={onComplete} className={styles.enterBtn}>
+                        <button onClick={handleComplete} className={styles.enterBtn}>
                             Begin writing
                         </button>
 

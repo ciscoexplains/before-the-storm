@@ -120,7 +120,7 @@ export async function fetchSupportMessages(capsuleId: string) {
 
 // ─── I Want to Sail Actions ───
 
-export async function saveBottleMessage(message: string) {
+export async function saveBottleMessage(message: string, moodRating: number) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -129,6 +129,7 @@ export async function saveBottleMessage(message: string) {
     const { error } = await supabase.from('bottle_messages').insert({
         user_id: user.id,
         message,
+        mood_rating: moodRating,
     })
 
     if (error) throw new Error(error.message)
@@ -144,7 +145,7 @@ export async function catchRandomBottle() {
     // Fetch all messages, try to exclude own first
     const { data: all } = await supabase
         .from('bottle_messages')
-        .select('id, message, created_at')
+        .select('id, user_id, message, mood_rating, created_at')
         .order('created_at', { ascending: false })
 
     if (!all || all.length === 0) return null
@@ -156,3 +157,71 @@ export async function catchRandomBottle() {
     return picked
 }
 
+// ─── Constellation of Resilience ───
+
+export async function saveGroundingCompletion(moodRating: number) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) throw new Error('Not authenticated')
+
+    const { error } = await supabase.from('grounding_completions').insert({
+        user_id: user.id,
+        mood_rating: moodRating,
+    })
+
+    if (error) throw new Error(error.message)
+    return { success: true }
+}
+
+export type StarData = {
+    id: string
+    date: string
+    type: 'storm' | 'grounding' | 'bottle'
+    rating: number
+}
+
+export async function fetchConstellationData(): Promise<StarData[]> {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) throw new Error('Not authenticated')
+
+    const [capsules, groundings, bottles] = await Promise.all([
+        supabase
+            .from('emotional_capsules')
+            .select('id, stable_mood_rating, created_at')
+            .eq('user_id', user.id),
+        supabase
+            .from('grounding_completions')
+            .select('id, mood_rating, created_at')
+            .eq('user_id', user.id),
+        supabase
+            .from('bottle_messages')
+            .select('id, mood_rating, created_at')
+            .eq('user_id', user.id),
+    ])
+
+    const stars: StarData[] = [
+        ...(capsules.data || []).map(c => ({
+            id: c.id,
+            date: c.created_at,
+            type: 'storm' as const,
+            rating: c.stable_mood_rating,
+        })),
+        ...(groundings.data || []).map(g => ({
+            id: g.id,
+            date: g.created_at,
+            type: 'grounding' as const,
+            rating: g.mood_rating,
+        })),
+        ...(bottles.data || []).map(b => ({
+            id: b.id,
+            date: b.created_at,
+            type: 'bottle' as const,
+            rating: b.mood_rating,
+        })),
+    ]
+
+    return stars.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+}

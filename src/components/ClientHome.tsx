@@ -7,9 +7,10 @@ import WriteDashboard from './WriteDashboard'
 import StormMode from './StormMode'
 import GroundingExercise from './GroundingExercise'
 import SailMode from './SailMode'
+import ConstellationMap from './ConstellationMap'
 import styles from './ClientHome.module.css'
 
-type AppMode = 'gate' | 'write' | 'storm' | 'grounding' | 'sail'
+type AppMode = 'gate' | 'write' | 'storm' | 'grounding' | 'sail' | 'constellation'
 
 export default function ClientHome({ user }: { user: any }) {
     const [mode, setMode] = useState<AppMode>('gate')
@@ -37,6 +38,10 @@ export default function ClientHome({ user }: { user: any }) {
         setMode('sail')
     }
 
+    const handleConstellationMode = () => {
+        setMode('constellation')
+    }
+
     return (
         <div className={styles.appContainer}>
             <AnimatePresence mode="wait">
@@ -49,7 +54,11 @@ export default function ClientHome({ user }: { user: any }) {
                         transition={{ duration: 0.7 }}
                         style={{ width: '100%' }}
                     >
-                        <StabilityGate onComplete={handleGateComplete} onSail={handleSailMode} />
+                        <StabilityGate
+                            onComplete={handleGateComplete}
+                            onSail={handleSailMode}
+                            onConstellation={handleConstellationMode}
+                        />
                     </motion.div>
                 )}
                 {mode === 'grounding' && (
@@ -101,6 +110,18 @@ export default function ClientHome({ user }: { user: any }) {
                         style={{ width: '100%' }}
                     >
                         <SailMode onBack={handleBackToGate} />
+                    </motion.div>
+                )}
+                {mode === 'constellation' && (
+                    <motion.div
+                        key="constellation"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1.5 }}
+                        style={{ width: '100%' }}
+                    >
+                        <ConstellationMap onBack={handleBackToGate} />
                     </motion.div>
                 )}
             </AnimatePresence>

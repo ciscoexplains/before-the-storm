@@ -14,12 +14,13 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
 
     // Write state
     const [writeMessage, setWriteMessage] = useState('')
+    const [moodRating, setMoodRating] = useState(8)
     const [writeStep, setWriteStep] = useState<WriteStep>('form')
     const [writeError, setWriteError] = useState('')
 
     // Catch state
     const [catchStep, setCatchStep] = useState<CatchStep>('bobbing')
-    const [caughtMessage, setCaughtMessage] = useState<string | null>(null)
+    const [caughtMessage, setCaughtMessage] = useState<{ message: string, mood?: number } | null>(null)
     const [catchError, setCatchError] = useState('')
 
     // ── Write a Bottle ──
@@ -36,7 +37,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
         setWriteStep('throwing')
 
         try {
-            await saveBottleMessage(writeMessage.trim())
+            await saveBottleMessage(writeMessage.trim(), moodRating)
         } catch {
             setWriteError('Could not save your message. Please try again 🌊')
             setWriteStep('form')
@@ -49,6 +50,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
 
     const resetWrite = () => {
         setWriteMessage('')
+        setMoodRating(8)
         setWriteStep('form')
         setWriteError('')
     }
@@ -69,7 +71,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
             await new Promise(r => setTimeout(r, 1000))
             setCatchStep('opening')
             await new Promise(r => setTimeout(r, 800))
-            setCaughtMessage(result.message)
+            setCaughtMessage({ message: result.message, mood: (result as any).mood_rating })
             setCatchStep('reading')
         } catch {
             setCatchError('Could not catch the bottle. Try again!')
@@ -108,7 +110,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
 
             {/* Back Button */}
             <button onClick={onBack} className={styles.backBtn}>
-                ← Back
+                〈 Back
             </button>
 
             {/* Card */}
@@ -119,7 +121,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                 transition={{ delay: 0.5, duration: 0.8 }}
             >
                 <div className={styles.cardHeader}>
-                    <h1 className={styles.title}>🌊 I Want to Sail</h1>
+                    <h1 className={styles.title}>⛵ I Want to Sail</h1>
                     <p className={styles.subtitle}>You're doing well today. Let your happiness set sail.</p>
                 </div>
                 <div className={styles.divider} />
@@ -130,13 +132,13 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                         className={`${styles.tab} ${tab === 'write' ? styles.tabActive : ''}`}
                         onClick={() => { setTab('write'); resetWrite() }}
                     >
-                        ✉️ Write a Bottle
+                        🪶 Write a Bottle
                     </button>
                     <button
                         className={`${styles.tab} ${tab === 'catch' ? styles.tabActive : ''}`}
                         onClick={() => { setTab('catch'); throwBack() }}
                     >
-                        🎣 Catch a Bottle
+                        🪝 Catch a Bottle
                     </button>
                 </div>
 
@@ -151,7 +153,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                 exit={{ opacity: 0, y: -12 }}
                                 className={styles.tabContent}
                             >
-                                <p className={styles.hint}>Write something that makes you happy today 💛</p>
+                                <p className={styles.hint}>Write something that lights your heart today 🌅</p>
                                 <form onSubmit={handleWriteSubmit} className={styles.form}>
                                     <textarea
                                         className={styles.textarea}
@@ -161,9 +163,28 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                         placeholder="Today I'm happy because..."
                                         required
                                     />
+
+                                    {/* Mood Rating Slider */}
+                                    <div className={styles.moodSection}>
+                                        <p className={styles.moodLabel}>How bright is your happiness now? ({moodRating}/10)</p>
+                                        <input
+                                            type="range"
+                                            min="1"
+                                            max="10"
+                                            step="1"
+                                            value={moodRating}
+                                            onChange={(e) => setMoodRating(parseInt(e.target.value))}
+                                            className={styles.rangeInput}
+                                        />
+                                        <div className={styles.moodIndicators}>
+                                            <span>🌤️ Gentle</span>
+                                            <span>Radiant 🌟</span>
+                                        </div>
+                                    </div>
+
                                     {writeError && <p className={styles.error}>{writeError}</p>}
                                     <button type="submit" className={styles.submitBtn}>
-                                        Seal in the Bottle 🍾
+                                        Seal in the Bottle ⛵
                                     </button>
                                 </form>
                             </motion.div>
@@ -224,10 +245,10 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                             <BottleSVG />
                                         </div>
                                         {writeStep === 'bottling' && (
-                                            <p className={styles.animLabel}>Sealing your message... 🔒</p>
+                                            <p className={styles.animLabel}>Sealing your message... 📩</p>
                                         )}
                                         {writeStep === 'throwing' && (
-                                            <p className={styles.animLabel}>Casting into the ocean... 🌊</p>
+                                            <p className={styles.animLabel}>Casting into the ocean... 🌬️</p>
                                         )}
                                     </motion.div>
                                 )}
@@ -246,15 +267,15 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                     animate={{ y: [0, -10, 0] }}
                                     transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
                                 >
-                                    🌊
+                                    ⛵️
                                 </motion.div>
                                 <h3 className={styles.successTitle}>Your message is sailing away!</h3>
                                 <p className={styles.successText}>
                                     The happiness you wrote is now drifting across the ocean,
-                                    waiting for someone to catch it 💌
+                                    waiting for someone to catch it 🌌
                                 </p>
                                 <button onClick={resetWrite} className={styles.resetBtn}>
-                                    Write another ✉️
+                                    Write another 🪶
                                 </button>
                             </motion.div>
                         )}
@@ -272,7 +293,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                 exit={{ opacity: 0 }}
                                 className={styles.catchArea}
                             >
-                                <p className={styles.hint}>There's a bottle floating at sea... want to catch it? 🎣</p>
+                                <p className={styles.hint}>A bottle is drifting nearby... shall you reach for it? 🌙</p>
 
                                 <div className={styles.oceanMini}>
                                     {/* Floating bottle */}
@@ -300,7 +321,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                     className={styles.catchBtn}
                                     disabled={catchStep === 'catching'}
                                 >
-                                    {catchStep === 'catching' ? 'Catching...' : 'Catch the Bottle! 🎣'}
+                                    {catchStep === 'catching' ? 'Reaching...' : 'Catch the Bottle 🪩'}
                                 </button>
                             </motion.div>
                         )}
@@ -325,7 +346,7 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                     animate={{ opacity: [0, 1, 0] }}
                                     transition={{ duration: 0.8, ease: 'easeInOut' }}
                                 >
-                                    Opening the cork... 🍾
+                                    Opening the cork... 🌿
                                 </motion.p>
                             </motion.div>
                         )}
@@ -345,13 +366,20 @@ export default function SailMode({ onBack }: { onBack: () => void }) {
                                     transition={{ delay: 0.2, duration: 0.7, ease: 'easeOut' }}
                                 >
                                     <div className={styles.letterCardHeader}>
-                                        <span className={styles.letterWax}>💌</span>
-                                        <span className={styles.letterFrom}>A message from a bottle that sailed to you...</span>
+                                        <span className={styles.letterWax}>🌹</span>
+                                        <span className={styles.letterFrom}>
+                                            A message from a bottle that sailed to you...
+                                            {caughtMessage.mood && (
+                                                <span className={styles.moodTag}>
+                                                    {' · '} Happiness Level: {caughtMessage.mood}/10
+                                                </span>
+                                            )}
+                                        </span>
                                     </div>
-                                    <p className={styles.caughtMessage}>{caughtMessage}</p>
+                                    <p className={styles.caughtMessage}>{caughtMessage.message}</p>
                                 </motion.div>
                                 <button onClick={throwBack} className={styles.throwBackBtn}>
-                                    Throw it back to sea 🌊
+                                    Release it back to the sea 🌊
                                 </button>
                             </motion.div>
                         )}

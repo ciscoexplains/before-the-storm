@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS bottle_messages (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid REFERENCES auth.users(id) NOT NULL,
   message text NOT NULL,
+  mood_rating integer NOT NULL DEFAULT 10,
   created_at timestamptz DEFAULT now() NOT NULL
 );
 
@@ -86,3 +87,26 @@ CREATE POLICY "Users can insert their own bottle messages"
 CREATE POLICY "Anyone can read bottle messages"
   ON bottle_messages FOR SELECT
   USING (auth.role() = 'authenticated');
+
+-- ============================================
+-- Table: grounding_completions
+-- Tracks when Ananda finishes a grounding exercise.
+-- Each completion becomes a violet star on the
+-- Constellation of Resilience map.
+-- ============================================
+CREATE TABLE IF NOT EXISTS grounding_completions (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id uuid REFERENCES auth.users(id) NOT NULL,
+  mood_rating integer NOT NULL DEFAULT 5,
+  created_at timestamptz DEFAULT now() NOT NULL
+);
+
+ALTER TABLE grounding_completions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can insert their own grounding completions"
+  ON grounding_completions FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can read their own grounding completions"
+  ON grounding_completions FOR SELECT
+  USING (auth.uid() = user_id);
