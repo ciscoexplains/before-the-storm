@@ -272,7 +272,7 @@ STRICT RULES:
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.0-flash",
             contents: [{
                 role: "user",
                 parts: [{
@@ -296,9 +296,13 @@ STRICT RULES:
     } catch (err: any) {
         const duration = Date.now() - startTime
         console.error(`[analyzeConsciousness] Failed after ${duration}ms:`, err)
+
+        let errorMessage = err.message || 'An unexpected error occurred during analysis'
+        if (err.status) errorMessage = `[${err.status}] ${errorMessage}`
+
         return {
             success: false,
-            error: err.message || 'An unexpected error occurred during analysis'
+            error: errorMessage
         }
     }
 }
